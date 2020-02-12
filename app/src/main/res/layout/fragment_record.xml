@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+  <com.appbestsmile.voicelikeme.audiovisualization.GLAudioVisualizationView
+      android:id="@+id/visualizer_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toTopOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:av_bubblesRandomizeSizes="true"
+      app:av_bubblesSize="@dimen/bubble_size"
+      app:av_layersCount="4"
+      app:av_wavesCount="7"
+      app:av_wavesFooterHeight="@dimen/footer_height"
+      app:av_wavesHeight="@dimen/wave_height"
+      android:visibility="gone"/>
+
+  <ImageView
+      android:id="@+id/help_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_help_black_24dp"
+      app:layout_constraintVertical_bias="0.1"
+      app:layout_constraintHorizontal_bias="0.9"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+  <com.appbestsmile.voicelikeme.theme.ThemedFab
+      android:id="@+id/play_list_btn"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_playlist_add_black_24dp"
+      app:fabSize="mini"
+      app:layout_constraintLeft_toRightOf="@+id/btnRecord"
+      app:layout_constraintTop_toTopOf="@+id/btnRecord"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintBottom_toBottomOf="@+id/btnRecord"
+      app:layout_constraintHorizontal_bias="0.7"
+      app:rippleColor="@color/primary"
+      />
+
+  <com.appbestsmile.voicelikeme.theme.ThemedFab
+      android:id="@+id/btnPause"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_pause_black_24dp"
+      app:fabSize="mini"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toLeftOf="@+id/btnRecord"
+      app:layout_constraintTop_toTopOf="@+id/btnRecord"
+      app:layout_constraintBottom_toBottomOf="@+id/btnRecord"
+      app:layout_constraintHorizontal_bias="0.3"
+      app:rippleColor="@color/primary"
+      />
+
+  <com.appbestsmile.voicelikeme.theme.ThemedFab
+      android:id="@+id/btnRecord"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:src="@drawable/ic_media_record"
+      app:fabSize="normal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.9"
+      app:rippleColor="@color/primary"
+      />
+
+  <pl.droidsonroids.gif.GifImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/recording"
+      android:src="@drawable/recording"
+      android:layout_centerHorizontal="true"
+      app:layout_constraintVertical_bias="0.5"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+
+  </pl.droidsonroids.gif.GifImageView>
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/start_text"
+      android:textSize="25sp"
+      android:textColor="@color/accent_color"
+      android:fontFamily="sans-serif"
+      android:text="@string/tap_to_start_record"
+      android:layout_centerHorizontal="true"
+      app:layout_constraintVertical_bias="0.5"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/chronometer"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="40sp"
+      android:textColor="@android:color/white"
+      android:fontFamily="sans-serif"
+      android:layout_centerHorizontal="true"
+      app:layout_constraintVertical_bias="0.2"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>
