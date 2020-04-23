@@ -3,9 +3,9 @@
   <!-- About -->
 
   <!-- Toolbar -->
-  <string name="app_name">Voices Like Me</string>
+  <string name="app_name">VoiceLikeMe</string>
   <string name="action_settings">Setting</string>
-  <string name="tab_title_saved_recordings">Voices Like Me</string>
+  <string name="tab_title_saved_recordings">Voice Like Me</string>
 
   <!-- Toasts -->
 
@@ -57,6 +57,7 @@
     WRITE_EXTERNAL_STORAGE to save recorded audio
   </string>
 
+  <string name="recording_gif">recording.gif</string>
   <string name="help_website_url">https://appbestsmile.com/affirmation/</string>
 
 </resources>

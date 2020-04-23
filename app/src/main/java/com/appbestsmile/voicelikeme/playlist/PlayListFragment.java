@@ -11,6 +11,7 @@ import android.os.StrictMode;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,8 @@ import javax.inject.Inject;
 
 public class PlayListFragment extends BaseFragment implements PlayListMVPView {
   private static final String LOG_TAG = "PlayListFragment";
+
+  private int MAX_REPLAY_LENGTH = 2;
 
   @Inject
   public PlayListAdapter mPlayListAdapter;
@@ -264,6 +267,9 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     AlertDialog.Builder replayFileBuilder = new AlertDialog.Builder(getActivity());
     View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_replay_file, null);
     final EditText input = view.findViewById(R.id.replay_count);
+    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+    input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(MAX_REPLAY_LENGTH)});
+
     replayFileBuilder.setTitle(getString(R.string.dialog_title_replay));
     replayFileBuilder.setCancelable(true);
     replayFileBuilder.setPositiveButton(getString(R.string.dialog_action_ok),

@@ -34,6 +34,9 @@ import com.appbestsmile.voicelikeme.mvpbase.BaseFragment;
 import com.appbestsmile.voicelikeme.recordingservice.AudioRecordService;
 import com.appbestsmile.voicelikeme.recordingservice.AudioRecorder;
 import com.appbestsmile.voicelikeme.theme.ThemeHelper;
+
+import java.util.Locale;
+
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import pl.droidsonroids.gif.GifImageView;
@@ -68,6 +71,15 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
 
   public static RecordFragment newInstance() {
     return new RecordFragment();
+  }
+
+  private boolean isJapanese(){
+
+    String currentLanguage = Locale.getDefault().getLanguage();
+    if(currentLanguage.contains("ja"))
+      return true;
+    else
+      return false;
   }
 
   @Override public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -134,7 +146,8 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
     alphaAnimator.cancel();
     chronometer.setAlpha(1.0f);
     mPauseButton.setImageResource(R.drawable.ic_media_pause);
-    mRecodingView.setImageResource(R.drawable.recording);
+
+    mRecodingView.setImageResource(isJapanese() ? R.drawable.recording_jap : R.drawable.recording);
   }
 
   @Override
