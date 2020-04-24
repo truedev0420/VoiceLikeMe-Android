@@ -17,15 +17,15 @@
     <string name="dialog_text_delete">このファイルを削除してもよろしいですか？</string>
     <string name="dialog_title_rename">ファイル名変更</string>
     <string name="dialog_title_options">オプション</string>
-    <string name="dialog_title_replay">ファイルリプレイ</string>
+    <string name="dialog_title_replay">リピート再生</string>
 
     <string name="dialog_file_share">ファイルをシェア</string>
     <string name="dialog_file_rename">ファイル名変更</string>
     <string name="dialog_file_delete">ファイルを削除</string>
-    <string name="dialog_file_replay">ファイルリプレイ</string>
+    <string name="dialog_file_replay">リピート再生</string>
 
     <string name="dialog_action_cancel">キャンセル</string>
-    <string name="dialog_action_ok">オーケー</string>
+    <string name="dialog_action_ok">OK</string>
     <string name="dialog_action_yes">はい</string>
     <string name="dialog_action_no">番号</string>
 
