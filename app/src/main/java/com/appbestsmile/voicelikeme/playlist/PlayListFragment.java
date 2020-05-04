@@ -269,6 +269,7 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     final EditText input = view.findViewById(R.id.replay_count);
     input.setInputType(InputType.TYPE_CLASS_NUMBER);
     input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(MAX_REPLAY_LENGTH)});
+    input.setHint(getString(R.string.dialog_replay_hint));
 
     replayFileBuilder.setTitle(getString(R.string.dialog_title_replay));
     replayFileBuilder.setCancelable(true);

@@ -18,6 +18,7 @@
   <string name="dialog_title_rename">Rename File</string>
   <string name="dialog_title_options">Options</string>
   <string name="dialog_title_replay">Replay File</string>
+  <string name="dialog_replay_hint">Please enter number</string>
 
   <string name="dialog_file_share">Share File</string>
   <string name="dialog_file_rename">Rename File</string>

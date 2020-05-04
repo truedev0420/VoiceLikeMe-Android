@@ -18,6 +18,7 @@
     <string name="dialog_title_rename">ファイル名変更</string>
     <string name="dialog_title_options">オプション</string>
     <string name="dialog_title_replay">リピート再生</string>
+    <string name="dialog_replay_hint">数字を入力してください</string>
 
     <string name="dialog_file_share">ファイルをシェア</string>
     <string name="dialog_file_rename">ファイル名変更</string>
