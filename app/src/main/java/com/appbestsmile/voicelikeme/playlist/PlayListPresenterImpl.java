@@ -232,6 +232,8 @@ public class PlayListPresenterImpl<V extends PlayListMVPView> extends BasePresen
         recordItemDataSource.deleteRecordItem(recordingItem);
         recordingItems.remove(position);
         e.onSuccess(position);
+
+        fillAdapter();
       } else {
         e.onError(new Exception("File deletion failed"));
       }
