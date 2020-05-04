@@ -274,10 +274,16 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     replayFileBuilder.setCancelable(true);
     replayFileBuilder.setPositiveButton(getString(R.string.dialog_action_ok),
             (dialog, id) -> {
-              int value = Integer.parseInt(input.getText().toString().trim());
-              playListPresenter.replayFile(position, value);
+
+              try{
+                int value = Integer.parseInt(input.getText().toString().trim());
+                playListPresenter.replayFile(position, value);
+              }catch(Exception e){
+                Log.d("Parsing Exception : ", e.toString());
+              }
               dialog.cancel();
             });
+
     replayFileBuilder.setNegativeButton(getActivity().getString(R.string.dialog_action_cancel),
             (dialog, id) -> dialog.cancel());
     replayFileBuilder.setView(view);
