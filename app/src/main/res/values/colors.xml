@@ -6,6 +6,7 @@
 
   <color name="av_color_bg">#8f367c</color>
   <color name="transparent">#FFFFFFFF</color>
+  <color name="toggle_back_unchecked">#2d2e31</color>
 
   <!--Accent Color Collection-->
 

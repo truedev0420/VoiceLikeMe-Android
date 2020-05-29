@@ -24,6 +24,20 @@
     <string name="dialog_file_rename">ファイル名変更</string>
     <string name="dialog_file_delete">ファイルを削除</string>
     <string name="dialog_file_replay">リピート再生</string>
+    <string name="dialog_file_schedule">ファイルスケジュール</string>
+
+    <string name="alarm_repeat">繰り返す</string>
+    <string name="alarm_play">ファイルを再生する</string>
+    <string name="alarm_play_count">再生回数</string>
+
+    <string name="weekday_sunday">日</string>
+    <string name="weekday_monday">月</string>
+    <string name="weekday_tueday">火</string>
+    <string name="weekday_wednesday">水</string>
+    <string name="weekday_thursday">木</string>
+    <string name="weekday_friday">金</string>
+    <string name="weekday_saturday">土</string>
+
 
     <string name="dialog_action_cancel">キャンセル</string>
     <string name="dialog_action_ok">OK</string>

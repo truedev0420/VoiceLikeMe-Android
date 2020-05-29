@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/black"
+    android:padding="0dp"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/textVoiceName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Voice Name"
+            android:textSize="30dp"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+        <CheckBox
+            android:id="@+id/checkPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="@string/alarm_play"
+            android:buttonTint="@android:color/white"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutPlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/alarm_play_count"
+                android:textColor="@android:color/white"
+                android:layout_weight=".50"
+                android:layout_gravity="center"/>
+
+            <EditText
+                android:id="@+id/editPlays"
+                android:layout_width="0dp"
+                android:layout_weight=".50"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textAlignment="textEnd"
+                android:layout_gravity="end"
+                android:text="5"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:text="Current Time"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:textColor="@drawable/button_white_text"
+            tools:ignore="RtlCompat" />
+
+        <CheckBox
+            android:id="@+id/checkRepeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="@string/alarm_repeat"
+            android:buttonTint="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutWeekday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <ToggleButton
+                android:id="@+id/sunday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_sunday"
+                android:textOn="@string/weekday_sunday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+
+            <ToggleButton
+                android:id="@+id/monday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_monday"
+                android:textOn="@string/weekday_monday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+
+            <ToggleButton
+                android:id="@+id/tuesday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_tueday"
+                android:textOn="@string/weekday_tueday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+
+            <ToggleButton
+                android:id="@+id/wednesday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_wednesday"
+                android:textOn="@string/weekday_wednesday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+
+            <ToggleButton
+                android:id="@+id/thursday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_thursday"
+                android:textOn="@string/weekday_thursday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+
+            <ToggleButton
+                android:id="@+id/friday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_friday"
+                android:textOn="@string/weekday_friday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+
+            <ToggleButton
+                android:id="@+id/saturday"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:textOff="@string/weekday_saturday"
+                android:textOn="@string/weekday_saturday"
+                android:textSize="16dp"
+                android:textColor="@drawable/weekday_text"
+                android:background="@drawable/weekday_background"
+                android:layout_marginRight="10dp"
+                android:checked="true"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnOK"
+            android:text="@string/dialog_action_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:background="@drawable/button_black"
+            android:textColor="@drawable/button_white_text"/>
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:text="@string/dialog_action_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:background="@drawable/button_black"
+            android:textColor="@drawable/button_white_text"/>
+
+    </LinearLayout>
+</LinearLayout>

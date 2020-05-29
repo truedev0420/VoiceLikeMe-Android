@@ -193,6 +193,11 @@ public class PlayListPresenterImpl<V extends PlayListMVPView> extends BasePresen
     onListItemClick(adapterPosition, value);
   }
 
+  @Override
+  public void scheduleFileClicked(int position) {
+    getAttachedView().showScheduleFileDialog(position);
+  }
+
   @Override public void deleteFileClicked(int position) {
     getAttachedView().showDeleteFileDialog(position);
   }

@@ -54,6 +54,11 @@
           android:name="android.support.PARENT_ACTIVITY"
           android:value="com.appbestsmile.voicelikeme.activities.MainActivity"/>
     </activity>
+
+
+    <receiver android:name=".alarm_manager.AlarmReceiver"/>
+    <receiver android:name=".alarm_manager.NotificationReceiver" />
+
   </application>
 
 </manifest>

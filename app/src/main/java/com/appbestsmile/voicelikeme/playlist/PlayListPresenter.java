@@ -31,4 +31,6 @@ public interface PlayListPresenter<V extends PlayListMVPView> extends IMVPPresen
   void replayFileClicked(int position);
 
   void replayFile(int position, int value);
+
+  void scheduleFileClicked(int position);
 }

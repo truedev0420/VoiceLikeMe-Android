@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.appbestsmile.voicelikeme.AppConstants;
 import com.appbestsmile.voicelikeme.R;
+import com.appbestsmile.voicelikeme.alarm_manager.AlarmManagerDialog;
 import com.appbestsmile.voicelikeme.db.RecordingItem;
 import com.appbestsmile.voicelikeme.mvpbase.BaseFragment;
 import com.appbestsmile.voicelikeme.recordingservice.Constants;
@@ -197,6 +198,7 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     fileOptions.add(getString(R.string.dialog_file_rename));
     fileOptions.add(getString(R.string.dialog_file_delete));
     fileOptions.add(getString(R.string.dialog_file_replay));
+    fileOptions.add(getString(R.string.dialog_file_schedule));
 
     final CharSequence[] items = fileOptions.toArray(new CharSequence[fileOptions.size()]);
 
@@ -216,6 +218,9 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
           break;
         case 3:
           playListPresenter.replayFileClicked(position);
+          break;
+        case 4:
+          playListPresenter.scheduleFileClicked(position);
           break;
       }
     });
@@ -307,6 +312,11 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
         (dialog, id) -> dialog.cancel());
     AlertDialog alert = confirmDelete.create();
     alert.show();
+  }
+
+  @Override
+  public void showScheduleFileDialog(int position) {
+    new AlarmManagerDialog(getActivity()).show();
   }
 
   @Override public void pauseMediaPlayer(int position) {
