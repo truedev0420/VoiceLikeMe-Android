@@ -30,6 +30,10 @@
     <string name="alarm_play">ファイルを再生する</string>
     <string name="alarm_play_count">再生回数</string>
 
+    <string name="notification_title">スケジュール</string>
+    <string name="notification_msg_playing">遊び始めました %s, %s 回.</string>
+
+
     <string name="weekday_sunday">日</string>
     <string name="weekday_monday">月</string>
     <string name="weekday_tueday">火</string>

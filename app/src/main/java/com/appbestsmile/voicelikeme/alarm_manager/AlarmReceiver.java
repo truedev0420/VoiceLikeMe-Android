@@ -71,7 +71,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.mipmap.ic_launcher_round)
-                        .setContentTitle("Schedule")
+                        .setContentTitle(context.getString(R.string.notification_title))
                         .setContentText(alarmMessage)
                         .setDeleteIntent(deletePendingIntent)
                         .setChannelId(CHANNEL_ID);

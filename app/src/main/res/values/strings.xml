@@ -30,6 +30,9 @@
   <string name="alarm_play">Play File</string>
   <string name="alarm_play_count">Play Count</string>
 
+  <string name="notification_title">Schedule</string>
+  <string name="notification_msg_playing">Started to play %s, %s times.</string>
+
   <string name="weekday_sunday">S</string>
   <string name="weekday_monday">M</string>
   <string name="weekday_tueday">T</string>
