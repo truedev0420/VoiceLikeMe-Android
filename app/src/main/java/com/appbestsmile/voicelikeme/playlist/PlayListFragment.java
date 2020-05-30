@@ -21,14 +21,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appbestsmile.voicelikeme.AppConstants;
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.alarm_manager.AlarmManagerDialog;
 import com.appbestsmile.voicelikeme.db.RecordingItem;
 import com.appbestsmile.voicelikeme.mvpbase.BaseFragment;
 import com.appbestsmile.voicelikeme.recordingservice.Constants;
 import com.appbestsmile.voicelikeme.theme.ThemeHelper;
-import com.appbestsmile.voicelikeme.AppConstants;
 
 import java.io.Console;
 import java.io.File;
@@ -316,7 +314,12 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
 
   @Override
   public void showScheduleFileDialog(int position) {
-    new AlarmManagerDialog(getActivity()).show();
+
+    String filePath = playListPresenter.getListItemAt(position).getFilePath();
+    String fileName = playListPresenter.getListItemAt(position).getName();
+
+    AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), fileName, filePath);
+    alarmManagerDialog.show();
   }
 
   @Override public void pauseMediaPlayer(int position) {

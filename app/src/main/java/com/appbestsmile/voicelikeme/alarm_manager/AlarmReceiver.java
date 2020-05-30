@@ -23,8 +23,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "Alarm went off", Toast.LENGTH_SHORT).show();
-        Log.d("MyAlarmReceiver", "Alarm went off");
+        Log.d("AlarmReceiver", "Alarm went off");
 
         Calendar currentCalendar = Calendar.getInstance();
         int notifyID = (int) currentCalendar.getTimeInMillis();
@@ -39,13 +38,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
         String voice_name = intent.getStringExtra("voice_name");
+        String voice_path = intent.getStringExtra("voice_path");
+
         Boolean isPlayable = intent.getBooleanExtra("playable", false);
 
         Intent deleteIntent = new Intent(context, NotificationReceiver.class);
         deleteIntent.setAction("notification");
         deleteIntent.putExtra("voice_name", voice_name);
         deleteIntent.putExtra("playable", isPlayable);
-
+        deleteIntent.putExtra("voice_path", voice_path);
 
         String alarmMessage;
         String play_count = "";
@@ -53,9 +54,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         if(isPlayable){
 
             play_count = intent.getStringExtra("play_count");
+            deleteIntent.putExtra("play_count", play_count);
 
             // user receive push notification and play sound 10 times
-            alarmMessage = String.format("Playing %s, %s times.", voice_name, play_count);
+            alarmMessage = String.format(context.getString(R.string.notification_msg_playing), voice_name, play_count);
 
         }else{
 

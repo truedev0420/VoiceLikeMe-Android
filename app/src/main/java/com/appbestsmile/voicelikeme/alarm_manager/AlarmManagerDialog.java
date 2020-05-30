@@ -42,12 +42,16 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
 
     private int mHourOfDay, mMinute;
 
-    public AlarmManagerDialog(Activity activity) {
+    private String mVoiceName;
+    private String mVoicePath;
+
+    public AlarmManagerDialog(Activity activity, String voiceName, String voicePath) {
 
         super(activity);
         // TODO Auto-generated constructor stub
         this.activity = activity;
-
+        mVoiceName = voiceName;
+        mVoicePath = voicePath;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -70,6 +74,9 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
         layoutPlay          = (LinearLayout) findViewById(R.id.layoutPlay);
 
         textVoiceName       = (TextView) findViewById(R.id.textVoiceName);
+        textVoiceName.setText(mVoiceName);
+
+
         editPlayCount       = (EditText) findViewById(R.id.editPlays);
 
         btnTime             = (Button) findViewById(R.id.btnTime);
@@ -157,8 +164,11 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
                 AlarmManager alarmMgr = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
 
                 Intent intent = new Intent(activity, AlarmReceiver.class);
+
                 intent.putExtra("voice_name", textVoiceName.getText().toString());
+                intent.putExtra("voice_path", mVoicePath);
                 intent.putExtra("playable",  checkPlay.isChecked());
+
 
                 if(checkPlay.isChecked())
                     intent.putExtra("play_count", editPlayCount.getText().toString());
