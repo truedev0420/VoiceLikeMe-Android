@@ -19,49 +19,10 @@ public class NotificationReceiver extends BroadcastReceiver
         if (intent.getAction() == "notification")
         {
             // TODO: Grab extras from the Intent as needed.
-            String voice_name = intent.getStringExtra("voice_name");
-            String voice_path = intent.getStringExtra("voice_path");
 
-            Log.d(TAG, voice_path);
+            int position = intent.getIntExtra("position", -1);
 
-            Boolean isPlayable = intent.getBooleanExtra("playable", false);
-
-            Log.d(TAG, isPlayable.toString());
-
-            if(isPlayable){
-
-                int maxCount = Integer.parseInt(intent.getStringExtra("play_count"));
-
-                Log.d(TAG, "maxCount : " + maxCount);
-
-                MediaPlayer mediaPlayer = new MediaPlayer();
-
-                try {
-
-                    mediaPlayer.setDataSource(voice_path);
-                    mediaPlayer.prepare();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                final int[] count = {0}; // initialise outside listener to prevent looping
-
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-                        if(count[0] < maxCount) {
-                            count[0]++;
-                            mediaPlayer.seekTo(0);
-                            mediaPlayer.start();
-
-                            Log.d("Played Count : ", count[0] + "");
-                        }
-                    }});
-
-                mediaPlayer.start();
-            }
+            Log.d(TAG, position + "");
         }
     }
 }

@@ -318,7 +318,7 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     String filePath = playListPresenter.getListItemAt(position).getFilePath();
     String fileName = playListPresenter.getListItemAt(position).getName();
 
-    AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), fileName, filePath);
+    AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), fileName, filePath, position);
     alarmManagerDialog.show();
   }
 

@@ -44,14 +44,16 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
 
     private String mVoiceName;
     private String mVoicePath;
+    private int mPosition;
 
-    public AlarmManagerDialog(Activity activity, String voiceName, String voicePath) {
+    public AlarmManagerDialog(Activity activity, String voiceName, String voicePath, int position) {
 
         super(activity);
         // TODO Auto-generated constructor stub
         this.activity = activity;
         mVoiceName = voiceName;
         mVoicePath = voicePath;
+        mPosition = position;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -165,9 +167,10 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
 
                 Intent intent = new Intent(activity, AlarmReceiver.class);
 
-                intent.putExtra("voice_name", textVoiceName.getText().toString());
+                intent.putExtra("voice_name", mVoiceName);
                 intent.putExtra("voice_path", mVoicePath);
                 intent.putExtra("playable",  checkPlay.isChecked());
+                intent.putExtra("position", mPosition);
 
 
                 if(checkPlay.isChecked())
