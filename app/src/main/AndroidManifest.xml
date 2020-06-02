@@ -17,7 +17,7 @@
       android:theme="@style/Theme.AppCompat.Light.NoActionBar">
     <activity
         android:name="com.appbestsmile.voicelikeme.activities.MainActivity"
-        android:screenOrientation="portrait"
+        android:screenOrientation="fullSensor"
         android:launchMode="singleTop">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -29,7 +29,7 @@
         android:name="com.appbestsmile.voicelikeme.activities.SettingsActivity"
         android:label="@string/action_settings"
         android:parentActivityName="com.appbestsmile.voicelikeme.activities.MainActivity"
-        android:screenOrientation="portrait">
+        android:screenOrientation="fullSensor">
       <meta-data
           android:name="android.support.PARENT_ACTIVITY"
           android:value="com.appbestsmile.voicelikeme.activities.MainActivity"/>
@@ -48,8 +48,8 @@
     <service android:name="com.appbestsmile.voicelikeme.recordingservice.AudioRecordService"/>
 
     <activity android:name="com.appbestsmile.voicelikeme.activities.PlayListActivity"
-        android:parentActivityName="com.appbestsmile.voicelikeme.activities.MainActivity"
-        android:screenOrientation="portrait">
+        android:parentActivityName="com.appbestsmile.voicelikeme.activities.MainActivity">
+
       <meta-data
           android:name="android.support.PARENT_ACTIVITY"
           android:value="com.appbestsmile.voicelikeme.activities.MainActivity"/>

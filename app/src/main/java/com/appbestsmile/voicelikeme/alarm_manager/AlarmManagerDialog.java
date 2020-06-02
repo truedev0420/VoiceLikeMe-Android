@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.icu.util.Calendar;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +31,8 @@ import com.appbestsmile.voicelikeme.R;
 
 
 public class AlarmManagerDialog extends Dialog implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
+
+    private String TAG = "AlarmManagerDialog";
 
     private Activity activity;
     private Button btnTime, btnOK, btnCancel;
@@ -163,7 +167,7 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
 
             case R.id.btnOK:
 
-                AlarmManager alarmMgr = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
+                AlarmManager alarmMgr = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
 
                 Intent intent = new Intent(activity, AlarmReceiver.class);
 
@@ -187,19 +191,17 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, (int) alarmCalendar.getTimeInMillis(), intent, 0);
 
                 if(!checkRepeat.isChecked()){
+
+                    Log.d(TAG, alarmCalendar.getTime().toString());
                     alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmCalendar.getTimeInMillis(), pendingIntent);
+
                 }else{
 
                     for(int i = 0; i < 7; i++){
 
                         if(weekdays[i].isChecked()){
 
-                            alarmCalendar.set(Calendar.DAY_OF_WEEK, i);
-
-                            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
-                                    alarmCalendar.getTimeInMillis(),  alarmMgr.INTERVAL_DAY * 7, pendingIntent);
-
-                            Log.d("AlarmManager", alarmCalendar.getTimeInMillis() + "");
+                            scheduleAlarm(i + 1);
                         }
                     }
                 }
@@ -217,5 +219,31 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
         setTimeText(hourOfDay, minute);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void scheduleAlarm(int dayOfWeek) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+        calendar.set(Calendar.HOUR_OF_DAY, mHourOfDay);
+        calendar.set(Calendar.MINUTE, mMinute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        // Check we aren't setting it in the past which would trigger it to fire instantly
+        /*if(calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 7);
+        }*/
+
+
+        Log.d(TAG, calendar.getTime().toString());
+
+        Intent intent = new Intent(activity, AlarmReceiver.class);
+        // Set this to whatever you were planning to do at the given time
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, (int) calendar.getTimeInMillis(), intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
     }
 }
