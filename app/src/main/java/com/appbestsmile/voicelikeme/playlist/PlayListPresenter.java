@@ -18,6 +18,8 @@ public interface PlayListPresenter<V extends PlayListMVPView> extends IMVPPresen
 
   void onListItemLongClick(int position);
 
+  void onListItemLongClick(String voice_name);
+
   int getListItemCount();
 
   void shareFileClicked(int position);

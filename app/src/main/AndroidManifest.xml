@@ -47,14 +47,7 @@
 
     <service android:name="com.appbestsmile.voicelikeme.recordingservice.AudioRecordService"/>
 
-    <activity android:name="com.appbestsmile.voicelikeme.activities.PlayListActivity"
-        android:parentActivityName="com.appbestsmile.voicelikeme.activities.MainActivity">
-
-      <meta-data
-          android:name="android.support.PARENT_ACTIVITY"
-          android:value="com.appbestsmile.voicelikeme.activities.MainActivity"/>
-    </activity>
-
+    <activity android:name="com.appbestsmile.voicelikeme.activities.PlayListActivity"/>
 
     <receiver android:name=".alarm_manager.AlarmReceiver"/>
     <receiver android:name=".alarm_manager.NotificationReceiver" />

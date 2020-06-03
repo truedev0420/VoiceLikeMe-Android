@@ -50,11 +50,19 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
   private TextView emptyListLabel;
   private MediaPlayer mMediaPlayer;
 
+  private String mNotiVoiceName;
+  private String mNotiVoicePath;
+
 
   private RecordingItem currentRecordingItem;
 
   public static PlayListFragment newInstance() {
     return new PlayListFragment();
+  }
+
+  public void setNotiData(String voice_name, String voice_path){
+    mNotiVoiceName = voice_name;
+    mNotiVoicePath = voice_path;
   }
 
   @Override
@@ -86,6 +94,11 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     //mRecordingsListView.setItemAnimator(new DefaultItemAnimator());
     mRecordingsListView.setAdapter(mPlayListAdapter);
     playListPresenter.onViewInitialised();
+
+
+    if(mNotiVoiceName != null){
+      playListPresenter.onListItemLongClick(mNotiVoiceName);
+    }
   }
 
   private final FileObserver observer = new FileObserver(

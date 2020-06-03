@@ -29,6 +29,8 @@ import android.widget.ToggleButton;
 
 import com.appbestsmile.voicelikeme.R;
 
+import java.util.Date;
+
 
 public class AlarmManagerDialog extends Dialog implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
 
@@ -225,6 +227,9 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
     private void scheduleAlarm(int dayOfWeek) {
 
         Calendar calendar = Calendar.getInstance();
+
+        int todayWeekday = Calendar.DAY_OF_WEEK;
+
         calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
         calendar.set(Calendar.HOUR_OF_DAY, mHourOfDay);
         calendar.set(Calendar.MINUTE, mMinute);
@@ -232,14 +237,19 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
         calendar.set(Calendar.MILLISECOND, 0);
 
         // Check we aren't setting it in the past which would trigger it to fire instantly
-        /*if(calendar.getTimeInMillis() < System.currentTimeMillis()) {
+        if(calendar.getTimeInMillis() < System.currentTimeMillis() && dayOfWeek != todayWeekday) {
             calendar.add(Calendar.DAY_OF_YEAR, 7);
-        }*/
+        }
 
 
         Log.d(TAG, calendar.getTime().toString());
 
         Intent intent = new Intent(activity, AlarmReceiver.class);
+
+        intent.putExtra("position", mPosition);
+        intent.putExtra("voice_name", mVoiceName);
+        intent.putExtra("voice_path", mVoicePath);
+
         // Set this to whatever you were planning to do at the given time
         PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, (int) calendar.getTimeInMillis(), intent, 0);
 

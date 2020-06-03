@@ -36,6 +36,8 @@ public class PlayListPresenterImpl<V extends PlayListMVPView> extends BasePresen
   private boolean isAudioPaused = false;
   private List<RecordingItem> recordingItems = new ArrayList<>();
 
+  private String notiVoiceName;
+
   @Inject
   public PlayListPresenterImpl(CompositeDisposable compositeDisposable) {
     super(compositeDisposable);
@@ -173,6 +175,20 @@ public class PlayListPresenterImpl<V extends PlayListMVPView> extends BasePresen
     getAttachedView().showFileOptionDialog(position, recordingItems.get(position));
   }
 
+  @Override
+  public void onListItemLongClick(String voice_name) {
+
+    if(voice_name != null) {
+
+      if(recordingItems.size() != 0){
+
+        int position = recordingItems.indexOf(voice_name);
+        onListItemLongClick(position);
+      }else
+        notiVoiceName = voice_name;
+    }
+  }
+
   @Override public int getListItemCount() {
     return recordingItems.size();
   }
@@ -259,6 +275,26 @@ public class PlayListPresenterImpl<V extends PlayListMVPView> extends BasePresen
           if (recordingItems.size() > 0) {
             this.recordingItems.addAll(recordingItems);
             getAttachedView().notifyListAdapter();
+
+            // Implement Long Press from notification
+
+            if(notiVoiceName != null && recordingItems.size() != 0){
+
+              int position = -1;
+
+              for(int i = 0; i < recordingItems.size(); i++){
+
+                if(recordingItems.get(i).getName().compareTo(notiVoiceName) == 0){
+                  position = i;
+                  break;
+                }
+              }
+
+              if(position != -1){
+                notiVoiceName = null;
+                onListItemLongClick(position);
+              }
+            }
           } else {
             getAttachedView().setRecordingListInVisible();
             getAttachedView().setEmptyLabelVisible();

@@ -52,6 +52,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Intent deleteIntent = new Intent(context, NotificationReceiver.class);
         deleteIntent.setAction("notification");
         deleteIntent.putExtra("voice_name", voice_name);
+        deleteIntent.putExtra("voice_path", voice_path);
 
         String alarmMessage;
         String play_count = "";
@@ -94,6 +95,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             alarmMessage = String.format("Go to PlayList View.");
 
             int position = intent.getIntExtra("position", -1);
+            intent.putExtra("voice_name", voice_name);
+            intent.putExtra("voice_path", voice_path);
+
 
             Log.d(TAG, position + "");
 
