@@ -38,7 +38,7 @@
       android:id="@+id/play_list_btn"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:src="@drawable/ic_playlist_add_black_24dp"
+      android:src="@drawable/ic_playlist_white"
       app:fabSize="mini"
       app:layout_constraintLeft_toRightOf="@+id/btnRecord"
       app:layout_constraintTop_toTopOf="@+id/btnRecord"
