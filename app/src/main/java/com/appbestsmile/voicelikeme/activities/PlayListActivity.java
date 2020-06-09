@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -30,6 +32,14 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
     }
     setNavBarColor();
 
+    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        // back button pressed
+        onBackPressed();
+      }
+    });
+
 
     PlayListFragment playListFragment  = PlayListFragment.newInstance();
 
@@ -38,6 +48,8 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
           .add(R.id.record_list_container, playListFragment)
           .commit();
     }
+
+
 
     // If PlayListActivity was started from Alarm Notification Receiver
 
@@ -53,5 +65,10 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
 
   @Override public AndroidInjector<Fragment> supportFragmentInjector() {
     return dispatchingAndroidInjector;
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
   }
 }
