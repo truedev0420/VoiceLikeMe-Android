@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.alarm_manager.AlarmManagerDialog;
 import com.appbestsmile.voicelikeme.db.RecordingItem;
+import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
 import com.appbestsmile.voicelikeme.mvpbase.BaseFragment;
 import com.appbestsmile.voicelikeme.recordingservice.Constants;
 import com.appbestsmile.voicelikeme.theme.ThemeHelper;
@@ -46,13 +47,14 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
   @Inject
   public PlayListPresenter<PlayListMVPView> playListPresenter;
 
+  @Inject
+  public ScheduleItemDataSource scheduleItemDataSource;
+
   private RecyclerView mRecordingsListView;
   private TextView emptyListLabel;
   private MediaPlayer mMediaPlayer;
 
   private String mNotiVoiceName;
-  private String mNotiVoicePath;
-
 
   private RecordingItem currentRecordingItem;
 
@@ -60,9 +62,8 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     return new PlayListFragment();
   }
 
-  public void setNotiData(String voice_name, String voice_path){
+  public void setNotiData(String voice_name){
     mNotiVoiceName = voice_name;
-    mNotiVoicePath = voice_path;
   }
 
   @Override
@@ -331,7 +332,7 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
     String filePath = playListPresenter.getListItemAt(position).getFilePath();
     String fileName = playListPresenter.getListItemAt(position).getName();
 
-    AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), fileName, filePath, position);
+    AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), scheduleItemDataSource, fileName, filePath, position);
     alarmManagerDialog.show();
   }
 

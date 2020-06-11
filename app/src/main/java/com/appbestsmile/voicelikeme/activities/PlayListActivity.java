@@ -54,12 +54,8 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
     // If PlayListActivity was started from Alarm Notification Receiver
 
     String voice_name = getIntent().getStringExtra("voice_name");
-    String voice_path = getIntent().getStringExtra("voice_path");
-    int position = getIntent().getIntExtra("position", -1);
-
-    if(voice_path != null && voice_name != null){
-
-      playListFragment.setNotiData(voice_name, voice_path);
+    if(voice_name != null){
+      playListFragment.setNotiData(voice_name);
     }
   }
 

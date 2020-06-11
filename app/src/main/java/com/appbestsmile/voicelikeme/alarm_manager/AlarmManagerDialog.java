@@ -14,6 +14,7 @@ import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
@@ -28,8 +29,12 @@ import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import com.appbestsmile.voicelikeme.R;
+import com.appbestsmile.voicelikeme.db.ScheduleItem;
+import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
 
 import java.util.Date;
+
+import javax.inject.Inject;
 
 
 public class AlarmManagerDialog extends Dialog implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
@@ -52,10 +57,15 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
     private String mVoicePath;
     private int mPosition;
 
-    public AlarmManagerDialog(Activity activity, String voiceName, String voicePath, int position) {
+    private ScheduleItemDataSource scheduleItemDataSource;
+
+
+    public AlarmManagerDialog(Activity activity, ScheduleItemDataSource scheduleItemDataSource, String voiceName, String voicePath, int position) {
 
         super(activity);
         // TODO Auto-generated constructor stub
+
+        this.scheduleItemDataSource = scheduleItemDataSource;
         this.activity = activity;
         mVoiceName = voiceName;
         mVoicePath = voicePath;
@@ -109,6 +119,7 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
         weekdays[5]     = (ToggleButton) findViewById(R.id.friday);
         weekdays[6]     = (ToggleButton) findViewById(R.id.saturday);
 
+        Log.d("AlarmManager", scheduleItemDataSource.toString());
         init();
     }
 
@@ -149,18 +160,18 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
                 mTimePicker.show();
                 break;
 
-            case R.id.checkRepeat :
+            case R.id.checkRepeat:
 
-                if(checkRepeat.isChecked()){
+                if (checkRepeat.isChecked()) {
                     layoutWeekday.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     layoutWeekday.setVisibility(View.GONE);
                 }
                 break;
 
-            case R.id.checkPlay :
+            case R.id.checkPlay:
 
-                if(checkPlay.isChecked())
+                if (checkPlay.isChecked())
                     layoutPlay.setVisibility(View.VISIBLE);
                 else
                     layoutPlay.setVisibility(View.GONE);
@@ -168,6 +179,74 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
                 break;
 
             case R.id.btnOK:
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, mHourOfDay);
+                calendar.set(Calendar.MINUTE, mMinute);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+
+
+                ScheduleItem scheduleItem = new ScheduleItem();
+                scheduleItem.setName(mVoiceName);
+                scheduleItem.setIsPlay(checkPlay.isChecked() ? (byte) Integer.parseInt(editPlayCount.getText().toString()) : 0);
+                scheduleItem.setIsRepeat(checkRepeat.isChecked() ? (byte) 1 : 0);
+
+                long scheduleTime = calendar.getTimeInMillis();
+                if (!checkRepeat.isChecked() && calendar.getTimeInMillis() < System.currentTimeMillis())
+                    scheduleTime = calendar.getTimeInMillis() + 24 * 60 * 60 * 1000;
+
+                scheduleItem.setTime(scheduleTime + "");
+
+                Log.d(TAG, calendar.getTime().toString());
+
+                String weekday = "";
+
+                if(checkRepeat.isChecked()) {
+
+                    for(int i = 0; i < 7; i++){
+                        if(weekdays[i].isChecked()){
+
+                            calendar.set(Calendar.DAY_OF_WEEK, i + 1);
+                            if(calendar.getTimeInMillis() < System.currentTimeMillis())
+                                weekday += (calendar.getTimeInMillis() + 7 * 24 * 60 * 60 * 1000);
+                            else
+                                weekday += calendar.getTimeInMillis();
+                        }else
+                            weekday += "0";
+
+                        if(i < 6)
+                            weekday += ":";
+                    }
+                }
+                scheduleItem.setWeekdays(weekday);
+
+
+                Handler handler = new Handler();
+
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            scheduleItemDataSource.insertNewScheduleItem(scheduleItem);
+                            handler.post(this);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                thread.start();
+
+                try {
+
+                }catch(Exception e){
+                    Log.e(TAG, e.toString());
+                }
+
+
+                /*
+                // Register alarm / notification to Android System AlarmManager.
 
                 AlarmManager alarmMgr = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
 
@@ -178,19 +257,11 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
                 intent.putExtra("playable",  checkPlay.isChecked());
                 intent.putExtra("position", mPosition);
 
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, (int) calendar.getTimeInMillis(), intent, 0);
 
                 if(checkPlay.isChecked())
                     intent.putExtra("play_count", editPlayCount.getText().toString());
 
-
-                Calendar alarmCalendar = Calendar.getInstance();
-                alarmCalendar.set(Calendar.HOUR_OF_DAY, mHourOfDay);
-                alarmCalendar.set(Calendar.MINUTE, mMinute);
-                alarmCalendar.set(Calendar.SECOND, 0);
-                alarmCalendar.set(Calendar.MILLISECOND, 0);
-
-
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, (int) alarmCalendar.getTimeInMillis(), intent, 0);
 
                 if(!checkRepeat.isChecked()){
 
@@ -206,7 +277,7 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
                             scheduleAlarm(i + 1);
                         }
                     }
-                }
+                }*/
 
                 dismiss();
                 break;
@@ -243,7 +314,6 @@ public class AlarmManagerDialog extends Dialog implements View.OnClickListener, 
 
 
         Log.d(TAG, calendar.getTime().toString());
-
         Intent intent = new Intent(activity, AlarmReceiver.class);
 
         intent.putExtra("position", mPosition);

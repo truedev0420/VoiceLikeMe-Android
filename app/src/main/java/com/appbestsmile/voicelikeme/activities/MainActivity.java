@@ -3,26 +3,27 @@ package com.appbestsmile.voicelikeme.activities;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 //import com.squareup.haha.perflib.Main;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import com.appbestsmile.voicelikeme.R;
+import com.appbestsmile.voicelikeme.alarm_manager.WatchScheduleThread;
 import com.appbestsmile.voicelikeme.audiorecording.RecordFragment;
+import com.appbestsmile.voicelikeme.db.RecordItemDataSource;
+import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
 import com.appbestsmile.voicelikeme.mvpbase.BaseActivity;
+
 import java.util.List;
 import javax.inject.Inject;
+
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseActivity
@@ -32,6 +33,8 @@ public class MainActivity extends BaseActivity
   private static final int PERMISSION_REQ = 222;
 
   @Inject DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
+  @Inject ScheduleItemDataSource scheduleItemDataSource;
+  @Inject RecordItemDataSource recordingItemsDataSource;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -45,6 +48,9 @@ public class MainActivity extends BaseActivity
 
     /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
+
+    WatchScheduleThread scheduleThread = new WatchScheduleThread(getApplicationContext());
+    scheduleThread.start();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

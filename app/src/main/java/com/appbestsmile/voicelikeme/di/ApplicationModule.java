@@ -6,6 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import com.appbestsmile.voicelikeme.db.AppDataBase;
 import com.appbestsmile.voicelikeme.db.RecordItemDataSource;
+import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
 import com.appbestsmile.voicelikeme.di.qualifiers.ApplicationContext;
 import javax.inject.Singleton;
 
@@ -23,5 +24,11 @@ public class ApplicationModule {
   @Singleton
   RecordItemDataSource provideRecordItemDataSource(@ApplicationContext Context context) {
     return AppDataBase.getInstance(context).getRecordItemDataSource();
+  }
+
+  @Provides
+  @Singleton
+  ScheduleItemDataSource provideScheduleItemDataSource(@ApplicationContext Context context) {
+    return AppDataBase.getInstance(context).getScheduleItemDataSource();
   }
 }

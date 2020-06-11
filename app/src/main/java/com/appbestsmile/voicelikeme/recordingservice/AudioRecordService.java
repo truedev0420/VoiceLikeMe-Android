@@ -27,6 +27,7 @@ public class AudioRecordService extends Service {
 
   @Inject
   public AudioRecorder audioRecorder;
+
   @Inject
   public AudioRecordingDbmHandler handler;
   private ServiceBinder mIBinder;
