@@ -26,6 +26,10 @@
     <string name="dialog_file_replay">リピート再生</string>
     <string name="dialog_file_schedule">ファイルスケジュール</string>
 
+    <string name="dialog_schedule_title">スケジュール</string>
+    <string name="dialog_schedule_add">追加</string>
+    <string name="dialog_schedule_delete">を削除</string>
+
     <string name="alarm_repeat">繰り返す</string>
     <string name="alarm_play">ファイルを再生する</string>
     <string name="alarm_play_count">再生回数</string>

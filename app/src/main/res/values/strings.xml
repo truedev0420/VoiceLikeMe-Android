@@ -26,6 +26,10 @@
   <string name="dialog_file_replay">Replay File</string>
   <string name="dialog_file_schedule">Schedule File</string>
 
+  <string name="dialog_schedule_title">Schedules</string>
+  <string name="dialog_schedule_add">Add</string>
+  <string name="dialog_schedule_delete">Delete</string>
+
   <string name="alarm_repeat">Repeat</string>
   <string name="alarm_play">Play File</string>
   <string name="alarm_play_count">Play Count</string>

@@ -1,8 +1,11 @@
 package com.appbestsmile.voicelikeme.playlist;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.FileObserver;
@@ -23,7 +26,10 @@ import android.widget.Toast;
 
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.alarm_manager.AlarmManagerDialog;
+import com.appbestsmile.voicelikeme.db.AppDataBase;
+import com.appbestsmile.voicelikeme.db.RecordItemDataSource;
 import com.appbestsmile.voicelikeme.db.RecordingItem;
+import com.appbestsmile.voicelikeme.db.ScheduleItem;
 import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
 import com.appbestsmile.voicelikeme.mvpbase.BaseFragment;
 import com.appbestsmile.voicelikeme.recordingservice.Constants;
@@ -32,7 +38,13 @@ import com.appbestsmile.voicelikeme.theme.ThemeHelper;
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 
@@ -329,11 +341,118 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
   @Override
   public void showScheduleFileDialog(int position) {
 
-    String filePath = playListPresenter.getListItemAt(position).getFilePath();
     String fileName = playListPresenter.getListItemAt(position).getName();
 
-    AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), scheduleItemDataSource, fileName, filePath, position);
-    alarmManagerDialog.show();
+    final List<ScheduleItem>[] scheduleItems = new List[]{new ArrayList<ScheduleItem>()};
+
+    Handler handler = new Handler();
+
+    Thread thread = new Thread() {
+      @Override
+      protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+      }
+
+      @Override
+      public void run() {
+
+        try {
+          scheduleItems[0] =  AppDataBase.getInstance(getContext()).scheduleItemDao().getAllSchedules();
+
+          List<ScheduleItem> matchedScheduleItems = new ArrayList<ScheduleItem>();
+          for(int i = 0; i < scheduleItems[0].size(); i++){
+
+            if(scheduleItems[0].get(i).getName().contains(fileName))
+              matchedScheduleItems.add(scheduleItems[0].get(i));
+          }
+
+          showScheduleListDialog(matchedScheduleItems, position);
+
+          handler.post(this);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    };
+
+    thread.start();
+  }
+
+  private void showScheduleListDialog(List<ScheduleItem> matchedScheduleItems, int position){
+
+    CharSequence[] scheduleTexts = new CharSequence[matchedScheduleItems.size()];
+
+    for(int i = 0; i < matchedScheduleItems.size(); i++){
+
+      long millis = Long.parseLong(matchedScheduleItems.get(i).getTime());
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTimeInMillis(millis);
+
+      scheduleTexts[i] = String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+    }
+
+    ArrayList selectedItems = new ArrayList();  // Where we track the selected items
+    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+    builder.setTitle(R.string.dialog_schedule_title)
+            .setMultiChoiceItems(scheduleTexts, null,
+                    new DialogInterface.OnMultiChoiceClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which,
+                                          boolean isChecked) {
+                        if (isChecked) {
+                          // If the user checked the item, add it to the selected items
+                          selectedItems.add(which);
+                        } else if (selectedItems.contains(which)) {
+                          // Else, if the item is already in the array, remove it
+                          selectedItems.remove(Integer.valueOf(which));
+                        }
+                      }
+                    })
+            .setNeutralButton(R.string.dialog_schedule_add, new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialogInterface, int i) {
+
+                String filePath = playListPresenter.getListItemAt(position).getFilePath();
+                String fileName = playListPresenter.getListItemAt(position).getName();
+
+                AlarmManagerDialog alarmManagerDialog = new AlarmManagerDialog(getActivity(), scheduleItemDataSource, fileName, filePath, position);
+                alarmManagerDialog.show();
+              }
+            })
+            // Set the action buttons
+            .setPositiveButton(R.string.dialog_action_cancel, new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int id) {
+              }
+            })
+            .setNegativeButton(R.string.dialog_schedule_delete, new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int id) {
+
+                for(int i = 0 ; i < selectedItems.size(); i++){
+                  ScheduleItem selected = matchedScheduleItems.get(Integer.parseInt(selectedItems.get(i).toString()));
+
+                  new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                      AppDataBase.getInstance(getContext()).scheduleItemDao().deleteScheduleItem(selected);
+                    }
+                  }).start();
+                }
+              }
+            });
+
+
+    // The alert dialog should be shown on main UI thread.
+
+    getActivity().runOnUiThread(new Runnable() {
+      public void run() {
+        AlertDialog alert = builder.create();
+        alert.show();
+      }
+    });
   }
 
   @Override public void pauseMediaPlayer(int position) {
