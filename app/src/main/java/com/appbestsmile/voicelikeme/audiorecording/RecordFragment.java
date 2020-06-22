@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.appbestsmile.voicelikeme.activities.ChatLoginActivity;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.appbestsmile.voicelikeme.AppConstants;
 import com.appbestsmile.voicelikeme.R;
@@ -61,6 +63,7 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
   private FloatingActionButton mPlayListBtn;
 
   private ImageView mHelpButton;
+  private ImageView mChatButton;
 
   @Inject
   @ActivityContext
@@ -112,6 +115,14 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
         startActivity(browserIntent);
       }
     });
+
+    mChatButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(getContext(), ChatLoginActivity.class);
+        startActivity(intent);
+      }
+    });
   }
 
   @SuppressLint("RestrictedApi")
@@ -127,6 +138,7 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
     mPauseButton = recordView.findViewById(R.id.btnPause);
     mTextStart = recordView.findViewById(R.id.start_text);
     mHelpButton =  recordView.findViewById(R.id.help_btn);
+    mChatButton =  recordView.findViewById(R.id.chat_btn);
 
     mTextStart.setVisibility(View.VISIBLE);
 

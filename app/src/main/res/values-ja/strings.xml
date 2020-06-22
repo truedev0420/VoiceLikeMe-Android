@@ -37,6 +37,9 @@
     <string name="notification_title">スケジュール</string>
     <string name="notification_msg_playing">遊び始めました %s, %s 回.</string>
 
+    <string name="chat_nickname">ニツクネーム</string>
+    <string name="chat_update">更新</string>
+    <string name="chat_enter_message">メツセーヅを入力してください</string>
 
     <string name="weekday_sunday">日</string>
     <string name="weekday_monday">月</string>

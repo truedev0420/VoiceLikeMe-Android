@@ -1,85 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- About -->
+    <!-- About -->
 
-  <!-- Toolbar -->
-  <string name="app_name">VoiceLikeMe</string>
-  <string name="action_settings">Setting</string>
-  <string name="tab_title_saved_recordings">Voice Like Me</string>
+    <!-- Toolbar -->
+    <string name="app_name">VoiceLikeMe</string>
+    <string name="action_settings">Setting</string>
+    <string name="tab_title_saved_recordings">Voice Like Me</string>
 
-  <!-- Toasts -->
+    <!-- Toasts -->
 
-  <!-- Notifications -->
-  <string name="notification_recording">Audio Recording&#8230;</string>
+    <!-- Notifications -->
+    <string name="notification_recording">Audio Recording&#8230;</string>
 
-  <!-- Dialogs -->
-  <string name="dialog_title_delete">Confirm Delete&#8230;</string>
-  <string name="dialog_text_delete">Are you sure you would like to delete this file?</string>
-  <string name="dialog_title_rename">Rename File</string>
-  <string name="dialog_title_options">Options</string>
-  <string name="dialog_title_replay">Replay File</string>
-  <string name="dialog_replay_hint">Please enter number</string>
+    <!-- Dialogs -->
+    <string name="dialog_title_delete">Confirm Delete&#8230;</string>
+    <string name="dialog_text_delete">Are you sure you would like to delete this file?</string>
+    <string name="dialog_title_rename">Rename File</string>
+    <string name="dialog_title_options">Options</string>
+    <string name="dialog_title_replay">Replay File</string>
+    <string name="dialog_replay_hint">Please enter number</string>
 
-  <string name="dialog_file_share">Share File</string>
-  <string name="dialog_file_rename">Rename File</string>
-  <string name="dialog_file_delete">Delete File</string>
-  <string name="dialog_file_replay">Replay File</string>
-  <string name="dialog_file_schedule">Schedule File</string>
+    <string name="dialog_file_share">Share File</string>
+    <string name="dialog_file_rename">Rename File</string>
+    <string name="dialog_file_delete">Delete File</string>
+    <string name="dialog_file_replay">Replay File</string>
+    <string name="dialog_file_schedule">Schedule File</string>
 
-  <string name="dialog_schedule_title">Schedules</string>
-  <string name="dialog_schedule_add">Add</string>
-  <string name="dialog_schedule_delete">Delete</string>
+    <string name="dialog_schedule_title">Schedules</string>
+    <string name="dialog_schedule_add">Add</string>
+    <string name="dialog_schedule_delete">Delete</string>
 
-  <string name="alarm_repeat">Repeat</string>
-  <string name="alarm_play">Play File</string>
-  <string name="alarm_play_count">Play Count</string>
+    <string name="alarm_repeat">Repeat</string>
+    <string name="alarm_play">Play File</string>
+    <string name="alarm_play_count">Play Count</string>
 
-  <string name="notification_title">Schedule</string>
-  <string name="notification_msg_playing">Started to play %s, %s times.</string>
+    <string name="notification_title">Schedule</string>
+    <string name="notification_msg_playing">Started to play %s, %s times.</string>
 
-  <string name="weekday_sunday">S</string>
-  <string name="weekday_monday">M</string>
-  <string name="weekday_tueday">T</string>
-  <string name="weekday_wednesday">W</string>
-  <string name="weekday_thursday">T</string>
-  <string name="weekday_friday">F</string>
-  <string name="weekday_saturday">S</string>
+    <string name="chat_nickname">Nickname</string>
+    <string name="chat_update">Update</string>
+    <string name="chat_enter_message">Please enter the message</string>
+
+    <string name="weekday_sunday">S</string>
+    <string name="weekday_monday">M</string>
+    <string name="weekday_tueday">T</string>
+    <string name="weekday_wednesday">W</string>
+    <string name="weekday_thursday">T</string>
+    <string name="weekday_friday">F</string>
+    <string name="weekday_saturday">S</string>
 
 
-  <string name="dialog_action_cancel">Cancel</string>
-  <string name="dialog_action_ok">OK</string>
-  <string name="dialog_action_yes">Yes</string>
-  <string name="dialog_action_no">No</string>
+    <string name="dialog_action_cancel">Cancel</string>
+    <string name="dialog_action_ok">OK</string>
+    <string name="dialog_action_yes">Yes</string>
+    <string name="dialog_action_no">No</string>
 
-  <string name="no_saved_recordings_message">No saved recordings</string>
-  <string name="tap_to_start_record">Tap to start recording</string>
+    <string name="no_saved_recordings_message">No saved recordings</string>
+    <string name="tap_to_start_record">Tap to start recording</string>
 
-  <string name="pause_recording_button">Pause</string>
-  <string name="resume_recording_button">Resume</string>
+    <string name="pause_recording_button">Pause</string>
+    <string name="resume_recording_button">Resume</string>
 
-  <string name="send_to">Send to</string>
+    <string name="send_to">Send to</string>
 
-  <!-- Preferences -->
-  <string name="pref_high_quality_key">pref_high_quality</string>
-  <string name="pref_high_quality_title">Enable High Quality Recording</string>
-  <string name="pref_high_quality_desc">Record in CD Quality</string>
-  <string name="pref_theme_title">Theme</string>
-  <string name="pref_theme_desc">Theme color to be used across the application</string>
-  <string name="stop_recording">Stop</string>
-  <string name="record_time_format">%02d:%02d:%02d</string>
-  <string name="play_time_format">%02d:%02d</string>
-  <string name="preference_primary_color">primary_color</string>
-  <string name="preference_base_theme">base_theme</string>
-  <string name="preference_accent_color">accent_color</string>
-  <string name="primary_color">Primary Color</string>
-  <string name="preference_layer_colors">layer_colors_key</string>
-  <string name="rate_app_title">Rate Application</string>
-  <string name="rate_app_desc">Rate the application in Google Play Store</string>
-  <string name="permissions_required">App requires RECORD_AUDIO permission to access mic and
+    <!-- Preferences -->
+    <string name="pref_high_quality_key">pref_high_quality</string>
+    <string name="pref_high_quality_title">Enable High Quality Recording</string>
+    <string name="pref_high_quality_desc">Record in CD Quality</string>
+    <string name="pref_theme_title">Theme</string>
+    <string name="pref_theme_desc">Theme color to be used across the application</string>
+    <string name="stop_recording">Stop</string>
+    <string name="record_time_format">%02d:%02d:%02d</string>
+    <string name="play_time_format">%02d:%02d</string>
+    <string name="preference_primary_color">primary_color</string>
+    <string name="preference_base_theme">base_theme</string>
+    <string name="preference_accent_color">accent_color</string>
+    <string name="primary_color">Primary Color</string>
+    <string name="preference_layer_colors">layer_colors_key</string>
+    <string name="rate_app_title">Rate Application</string>
+    <string name="rate_app_desc">Rate the application in Google Play Store</string>
+    <string name="permissions_required">App requires RECORD_AUDIO permission to access mic and
     WRITE_EXTERNAL_STORAGE to save recorded audio
   </string>
 
-  <string name="recording_gif">recording.gif</string>
-  <string name="help_website_url">https://appbestsmile.com/affirmation/</string>
+    <string name="recording_gif">recording.gif</string>
+    <string name="help_website_url">https://appbestsmile.com/affirmation/</string>
 
 </resources>

@@ -15,10 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <receiver
-            android:name=".alarm_manager.BootCompletedReceiver"
-            android:enabled="true"
-            android:exported="true"></receiver>
 
         <activity
             android:name=".activities.MainActivity"
@@ -26,15 +22,23 @@
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="fullSensor">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
+        </activity>
+
+        <activity android:name=".activities.PlayListActivity" />
+
+        <activity android:name=".activities.ChatLoginActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
@@ -52,10 +56,12 @@
 
         <service android:name=".recordingservice.AudioRecordService" />
 
-        <activity android:name=".activities.PlayListActivity" />
-
         <receiver android:name=".alarm_manager.AlarmReceiver" />
         <receiver android:name=".alarm_manager.NotificationReceiver" />
-    </application>
+        <receiver
+            android:name=".alarm_manager.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true" />
 
+    </application>
 </manifest>

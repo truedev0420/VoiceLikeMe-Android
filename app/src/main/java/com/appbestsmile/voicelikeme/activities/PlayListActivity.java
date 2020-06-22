@@ -49,8 +49,6 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
           .commit();
     }
 
-
-
     // If PlayListActivity was started from Alarm Notification Receiver
 
     String voice_name = getIntent().getStringExtra("voice_name");
