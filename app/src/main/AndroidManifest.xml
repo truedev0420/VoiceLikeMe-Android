@@ -38,7 +38,8 @@
 
         <activity android:name=".activities.PlayListActivity" />
 
-        <activity android:name=".activities.ChatLoginActivity">
+        <activity android:name=".activities.ChatLoginActivity"
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />

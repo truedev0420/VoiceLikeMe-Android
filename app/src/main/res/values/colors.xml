@@ -5,7 +5,7 @@
   <color name="accent_color">#f33b43</color>
 
   <color name="av_color_bg">#8f367c</color>
-  <color name="transparent">#FFFFFFFF</color>
+  <color name="transparent">#00000000</color>
   <color name="toggle_back_unchecked">#2d2e31</color>
   <color name="chat_profile_background">#699F38</color>
   <!--Accent Color Collection-->
