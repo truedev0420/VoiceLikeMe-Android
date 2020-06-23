@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appbestsmile.voicelikeme.AppConstants;
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.alarm_manager.AlarmManagerDialog;
 import com.appbestsmile.voicelikeme.db.AppDataBase;
@@ -115,20 +116,20 @@ public class PlayListFragment extends BaseFragment implements PlayListMVPView {
   }
 
   private final FileObserver observer = new FileObserver(
-      android.os.Environment.getExternalStorageDirectory().toString() + "/SoundRecorder") {
+      android.os.Environment.getExternalStorageDirectory().toString() + File.separator + AppConstants.APP_DATA_FOLDER) {
     // set up a file observer to watch this directory on sd card
     @Override public void onEvent(int event, String file) {
       if (event == FileObserver.DELETE) {
         // user deletes a recording file out of the app
 
         String filePath = android.os.Environment.getExternalStorageDirectory().toString()
-            + "/SoundRecorder"
+            + File.separator + AppConstants.APP_DATA_FOLDER
             + file
             + "]";
 
         Log.d(LOG_TAG, "File deleted ["
             + android.os.Environment.getExternalStorageDirectory().toString()
-            + "/SoundRecorder"
+            + File.separator + AppConstants.APP_DATA_FOLDER
             + file
             + "]");
 

@@ -19,6 +19,7 @@ import com.appbestsmile.voicelikeme.alarm_manager.WatchScheduleThread;
 import com.appbestsmile.voicelikeme.audiorecording.RecordFragment;
 import com.appbestsmile.voicelikeme.db.RecordItemDataSource;
 import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
+import com.appbestsmile.voicelikeme.global.AppPreference;
 import com.appbestsmile.voicelikeme.mvpbase.BaseActivity;
 
 import java.util.List;
@@ -51,6 +52,8 @@ public class MainActivity extends BaseActivity
 
     WatchScheduleThread scheduleThread = new WatchScheduleThread(getApplicationContext());
     scheduleThread.start();
+
+    AppPreference.getInstance().Initialize(getApplicationContext());
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {

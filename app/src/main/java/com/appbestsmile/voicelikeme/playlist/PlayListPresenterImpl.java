@@ -3,6 +3,7 @@ package com.appbestsmile.voicelikeme.playlist;
 import android.os.Environment;
 import android.util.Log;
 
+import com.appbestsmile.voicelikeme.AppConstants;
 import com.appbestsmile.voicelikeme.db.RecordItemDataSource;
 import com.appbestsmile.voicelikeme.db.RecordingItem;
 import com.appbestsmile.voicelikeme.db.ScheduleItemDataSource;
@@ -69,7 +70,7 @@ public class PlayListPresenterImpl<V extends PlayListMVPView> extends BasePresen
   private Single<Integer> rename(RecordingItem recordingItem, int adapterPosition, String name) {
     return Single.create((SingleOnSubscribe<Integer>) e -> {
       File newFile = new File(
-          Environment.getExternalStorageDirectory().getAbsolutePath() + "/SoundRecorder/" + name);
+          Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + AppConstants.APP_DATA_FOLDER + File.separator + name);
       if (newFile.exists() && !newFile.isDirectory()) {
         e.onError(new Exception("File with same name already exists"));
       } else {

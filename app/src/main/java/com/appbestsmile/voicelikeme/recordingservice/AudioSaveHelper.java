@@ -58,7 +58,7 @@ class AudioSaveHelper {
     Log.i("TEsting", "creating file");
     String storeLocation = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-    File folder = new File(storeLocation + "/SoundRecorder");
+    File folder = new File(storeLocation + File.separator + AppConstants.APP_DATA_FOLDER);
     if (!folder.exists()) {
       folder.mkdir();
     }
@@ -81,7 +81,7 @@ class AudioSaveHelper {
 //    String fileName = Constants.AUDIO_RECORDER_FILE_PREFIX + timestamp + Constants.AUDIO_RECORDER_FILE_EXT_WAV;
 
     String fileName = strNow + Constants.AUDIO_RECORDER_FILE_EXT_WAV;
-    String mFilePath = storeLocation + "/SoundRecorder/" + fileName;
+    String mFilePath = storeLocation + File.separator + AppConstants.APP_DATA_FOLDER + File.separator + fileName;
     mFile = new File(mFilePath);
 
     try {
