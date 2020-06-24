@@ -16,16 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
+        <activity android:name=".activities.ChatTopicActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:launchMode="singleTop"
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
@@ -35,10 +36,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
         </activity>
-
         <activity android:name=".activities.PlayListActivity" />
-
-        <activity android:name=".activities.ChatLoginActivity"
+        <activity
+            android:name=".activities.ChatLoginActivity"
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -63,6 +63,6 @@
             android:name=".alarm_manager.BootCompletedReceiver"
             android:enabled="true"
             android:exported="true" />
-
     </application>
+
 </manifest>

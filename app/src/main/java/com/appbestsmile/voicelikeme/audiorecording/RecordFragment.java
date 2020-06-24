@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.appbestsmile.voicelikeme.activities.ChatLoginActivity;
+import com.appbestsmile.voicelikeme.activities.ChatTopicActivity;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.appbestsmile.voicelikeme.AppConstants;
 import com.appbestsmile.voicelikeme.R;
@@ -119,7 +120,7 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
     mChatButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Intent intent = new Intent(getContext(), ChatLoginActivity.class);
+        Intent intent = new Intent(getContext(), ChatTopicActivity.class);
         startActivity(intent);
       }
     });

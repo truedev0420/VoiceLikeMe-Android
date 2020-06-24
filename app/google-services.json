@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "265331513842",
+    "firebase_url": "https://voice-like-me-app.firebaseio.com",
+    "project_id": "voice-like-me-app",
+    "storage_bucket": "voice-like-me-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265331513842:android:2fa6d2310dbc13af47736b",
+        "android_client_info": {
+          "package_name": "com.appbestsmile.voicelikeme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265331513842-g91r8pfkargp1bfpeucf6h079ss56tt9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRTD2jSsYCHF_z9EutTsHh_8AbS3A3aHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265331513842-g91r8pfkargp1bfpeucf6h079ss56tt9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "265331513842-8u7197a6n50lah1rb6ee9vs93ts3rdo8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.appbestsmile.voicelikeme"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
