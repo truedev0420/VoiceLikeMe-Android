@@ -1,15 +1,13 @@
 package com.appbestsmile.voicelikeme.activities;
 
-import android.content.ContentResolver;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -22,22 +20,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.chat.CircleImageView;
-import com.appbestsmile.voicelikeme.chat.TopicItem;
-import com.appbestsmile.voicelikeme.chat.TopicListAdapter;
 import com.appbestsmile.voicelikeme.global.AppPreference;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -50,7 +44,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,11 +57,21 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
     Button btnUpdate;
     EditText editNickname;
     Uri selectedProfileImage;
+    String auth_id;
+    String old_nickname;
+    String mOldProfileImage;
+    boolean changedProfileImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_login);
+
+        Bundle extras = getIntent().getExtras();
+        if(extras !=null) {
+            auth_id = extras.getString("current_user_id");
+        }
+
 
         // =========================        Manage Action and status bar            ====================== //
 
@@ -104,8 +107,11 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
     private void InitViews(){
 
         String nickName = AppPreference.getInstance().GetNickname();
-        if(!nickName.isEmpty())
+        if(!nickName.isEmpty()){
+            old_nickname = nickName;
             editNickname.setText(nickName);
+        }
+
 
         String profileImagePath = AppPreference.getInstance().GetProfileImage();
         if(!profileImagePath.isEmpty())
@@ -113,6 +119,26 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
             Bitmap bmp = BitmapFactory.decodeFile(profileImagePath);
             imageProfile.setImageBitmap(bmp);
         }
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = db.collection("users").document(auth_id);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        mOldProfileImage = document.getString("profile_image");
+                    } else {
+                        mOldProfileImage = "";
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
 
@@ -128,96 +154,133 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.btnUpdate :
-                String nickname = editNickname.getText().toString();
 
+                String nickname = editNickname.getText().toString();
 
                 // =====            Save user profile to local              ===== //
 
                 AppPreference.getInstance().SetNickname(nickname);
 
-                String destFilePath = Savefile(selectedProfileImage);
-                AppPreference.getInstance().SetProfileImage(destFilePath);
-
-
-
-                Bitmap bitmap = BitmapFactory.decodeFile(destFilePath);
-                imageProfile.setImageBitmap(bitmap);
-
-
-                // =====            Save user profile to firebase           ===== //
 
                 FirebaseApp.initializeApp(this);
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                String auto_id = db.collection("users").document().getId();
 
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReference();
-
-                // Create a reference to "mountains.jpg"
-
-                String extension = destFilePath.substring(destFilePath.lastIndexOf(".") + 1);
-                String storageFileName = String.format("users/%s.%s", auto_id, extension);
-
-
-                StorageReference profileImagesRef = storageRef.child(storageFileName);
-
-                // =====            Upload Image file to cloud storage      ===== //
-
-                // Get the data from an ImageView as bytes
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data = baos.toByteArray();
-
-                try {
-
-                    UploadTask uploadTask = profileImagesRef.putBytes(data);
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-
-                            Log.d(TAG, "uploadtask exception : " + exception.toString());
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                            // ...
-                            String storageProfilePath = taskSnapshot.getMetadata().getPath();
-
-                            Log.d(TAG, "storageProfilePath : " + storageProfilePath);
+                ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
+                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                dialog.setTitle(R.string.app_name);
+                dialog.setMessage("Updating. Please wait...");
+                dialog.setIndeterminate(true);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
 
 
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("nickname", nickname);
-                            user.put("profile_image", storageProfilePath);
+                if(changedProfileImage){
 
-                            db.collection("users").document(auto_id)
-                                    .set(user)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d(TAG, "DocumentSnapshot successfully written!");
-                                            onBackPressed();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Error writing document", e);
-                                        }
-                                    });
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot snapshot) {
-                            Log.d(TAG, "UPloaded bytes : " + snapshot.getBytesTransferred());
-                        }
-                    });
-                }catch(Exception e){
-                    Log.d(TAG, "Exception while uploading : " + e.toString());
+                    String destFilePath = Savefile(selectedProfileImage);
+                    AppPreference.getInstance().SetProfileImage(destFilePath);
+
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(destFilePath);
+                    imageProfile.setImageBitmap(bitmap);
+
+
+                    // =====            Save user profile to firebase           ===== //
+
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+
+
+                    String extension = destFilePath.substring(destFilePath.lastIndexOf(".") + 1);
+                    String storageFileName = String.format("users/%s.%s", nickname, extension);
+
+
+                    StorageReference profileImagesRef = storageRef.child(storageFileName);
+
+
+                    // =====            Upload Image file to cloud storage      ===== //
+
+                    // Get the data from an ImageView as bytes
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data = baos.toByteArray();
+
+                    try {
+
+                        UploadTask uploadTask = profileImagesRef.putBytes(data);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+
+                                Log.d(TAG, "uploadtask exception : " + exception.toString());
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                                // ...
+                                String storageProfilePath = taskSnapshot.getMetadata().getPath();
+
+                                Log.d(TAG, "storageProfilePath : " + storageProfilePath);
+
+                                Map<String, Object> user = new HashMap<>();
+                                user.put("nickname", nickname);
+                                user.put("profile_image", storageProfilePath);
+
+                                db.collection("users").document(auth_id)
+                                        .set(user)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                dialog.dismiss();
+                                                Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                onBackPressed();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                dialog.dismiss();
+                                                Log.w(TAG, "Error writing document", e);
+                                            }
+                                        });
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot snapshot) {
+                                Log.d(TAG, "Uploaded bytes : " + snapshot.getBytesTransferred());
+                            }
+                        });
+                    }catch(Exception e){
+                        Log.d(TAG, "Exception while uploading : " + e.toString());
+                    }
+
+                }else{
+
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("nickname", nickname);
+                    user.put("profile_image", mOldProfileImage);
+
+                    db.collection("users").document(auth_id)
+                            .set(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                    dialog.dismiss();
+                                    onBackPressed();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog.dismiss();
+                                    Log.w(TAG, "Error writing document", e);
+                                }
+                            });
                 }
 
                 break;
@@ -232,6 +295,7 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
                     Uri selectedImage = imageReturnedIntent.getData();
                     imageProfile.setImageURI(selectedImage);
                     selectedProfileImage = selectedImage;
+                    changedProfileImage = true;
                 }
                 break;
         }

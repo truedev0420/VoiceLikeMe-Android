@@ -1,5 +1,6 @@
 package com.appbestsmile.voicelikeme.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -85,6 +86,15 @@ public class ChatTopicActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference topicsCollectionRef = db.collection("topics");
 
+
+        ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setIndeterminate(true);
+        dialog.setTitle(R.string.app_name);
+        dialog.setMessage("Loading. Please wait...");
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
         topicsCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -97,12 +107,14 @@ public class ChatTopicActivity extends AppCompatActivity {
                         listTopics.add(new TopicItem(title, createdDate));
                     }
 
-                    if(listTopics.size() == 0)
-                        return;
-
-                    topicListAdapter = new TopicListAdapter(getApplicationContext(), R.layout.chat_topic_item, listTopics);
-                    listView.setAdapter(topicListAdapter);
+                    if(listTopics.size() != 0)
+                    {
+                        topicListAdapter = new TopicListAdapter(getApplicationContext(), R.layout.chat_topic_item, listTopics);
+                        listView.setAdapter(topicListAdapter);
+                    }
                 }
+
+                dialog.dismiss();
             }
         });
 
@@ -129,7 +141,7 @@ public class ChatTopicActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Log.d(TAG, " signInAnonymously success : " + user.getDisplayName());
+                                Log.d(TAG, " signInAnonymously success : " + user.getUid());
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -139,7 +151,7 @@ public class ChatTopicActivity extends AppCompatActivity {
                     });
 
         }else{
-            Log.d(TAG, " fdsajlfkd : " + currentUser.getUid());
+            Log.d(TAG, "Current User : " + currentUser.getUid());
         }
     }
 
@@ -160,7 +172,7 @@ public class ChatTopicActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.btnProfile) {
-            startActivity(new Intent(this, ChatLoginActivity.class));
+            startActivity(new Intent(this, ChatLoginActivity.class).putExtra("current_user_id", mAuth.getCurrentUser().getUid()));
         }
         return super.onOptionsItemSelected(item);
     }
