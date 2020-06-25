@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".AudioRecorderApp"
@@ -16,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".activities.ChatTopicActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:launchMode="singleTop"
@@ -37,12 +37,13 @@
                 android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.PlayListActivity" />
+        <activity android:name=".activities.ChatTopicActivity" />
         <activity
             android:name=".activities.ChatLoginActivity"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activities.ChatTopicActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
+                android:value="com.appbestsmile.voicelikeme.activities.ChatTopicActivity" />
         </activity>
 
         <provider
