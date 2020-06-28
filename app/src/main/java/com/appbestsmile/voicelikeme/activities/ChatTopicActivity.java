@@ -1,6 +1,5 @@
 package com.appbestsmile.voicelikeme.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -12,37 +11,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.chat.TopicItem;
 import com.appbestsmile.voicelikeme.chat.TopicListAdapter;
-import com.appbestsmile.voicelikeme.global.AppPreference;
+import com.appbestsmile.voicelikeme.chat.WaitProgressDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ChatTopicActivity extends AppCompatActivity {
 
     private final String TAG = getClass().getSimpleName();
-    private final int RC_SIGN_IN = 10000;
     private FirebaseAuth mAuth;
 
     ListView listView;
@@ -64,7 +53,7 @@ public class ChatTopicActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.md_black_1000));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.chat_main_dark));
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -77,6 +66,7 @@ public class ChatTopicActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_white_24dp);
 
 
+
         listView = (ListView) findViewById(R.id.listTopics);
         listTopics = new ArrayList<TopicItem>();
 
@@ -87,13 +77,8 @@ public class ChatTopicActivity extends AppCompatActivity {
         CollectionReference topicsCollectionRef = db.collection("topics");
 
 
-        ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setIndeterminate(true);
-        dialog.setTitle(R.string.app_name);
-        dialog.setMessage("Loading. Please wait...");
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
+        WaitProgressDialog dialogLoading = new WaitProgressDialog(this, "Loading. Please wait...");
+        dialogLoading.show();
 
         topicsCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -102,9 +87,11 @@ public class ChatTopicActivity extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
 
+                        String topic_id     = document.getId();
                         String title        = document.getString("title");
                         String createdDate  = document.getString("createdDate");
-                        listTopics.add(new TopicItem(title, createdDate));
+
+                        listTopics.add(new TopicItem(topic_id, title, createdDate));
                     }
 
                     if(listTopics.size() != 0)
@@ -114,7 +101,7 @@ public class ChatTopicActivity extends AppCompatActivity {
                     }
                 }
 
-                dialog.dismiss();
+                dialogLoading.dismiss();
             }
         });
 
@@ -172,10 +159,8 @@ public class ChatTopicActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.btnProfile) {
-            startActivity(new Intent(this, ChatLoginActivity.class).putExtra("current_user_id", mAuth.getCurrentUser().getUid()));
+            startActivity(new Intent(this, ChatProfileActivity.class).putExtra("current_user_id", mAuth.getCurrentUser().getUid()));
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

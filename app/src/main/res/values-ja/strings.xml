@@ -40,6 +40,10 @@
     <string name="chat_nickname">ニツクネーム</string>
     <string name="chat_update">更新</string>
     <string name="chat_enter_message">メツセーヅを入力してください</string>
+    <string name="chat_dialog_like">お気に入り</string>
+    <string name="chat_dialog_full_view">見る</string>
+    <string name="chat_dialog_download">ダウンロード</string>
+    <string name="chat_dialog_play">を再生する</string>
 
     <string name="weekday_sunday">日</string>
     <string name="weekday_monday">月</string>

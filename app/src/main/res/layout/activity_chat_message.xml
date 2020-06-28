@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.ChatMessageActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:titleTextColor="@color/md_white_1000"
+        android:background="@color/md_black_1000"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints"
+        android:backgroundTint="@color/chat_main"/>
+    
+    <ListView
+        android:id="@+id/listMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/layoutBottom"
+        android:divider="@null" />
+
+    <LinearLayout
+        android:id="@+id/layoutBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:id="@+id/layoutSubMessage"
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
+            android:layout_height="50dp"
+            android:background="@drawable/chat_enter_messsage_round">
+
+            <EditText
+                android:id="@+id/editMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/chat_enter_message"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:background="@null"
+                android:gravity="center_vertical" />
+
+            <ImageButton
+                android:id="@+id/btnFile"
+                android:layout_alignRight="@+id/editMessage"
+                android:background="@drawable/ic_chat_attach_file_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="13dp"/>
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btnSender"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignRight="@+id/layoutSubMessage"
+            android:background="@drawable/chat_sender_background"
+            android:src="@drawable/ic_send_white_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutFullPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/imageFullPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

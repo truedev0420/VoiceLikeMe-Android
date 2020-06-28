@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:id="@+id/layoutDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textDate"
+            android:text="@string/app_name"
+            android:background="@drawable/chat_message_date_round"
+            android:padding="5dp"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/layoutAvatar"
+            android:layout_width="0dp"
+            android:layout_weight="0.15"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/layoutAvatarTop"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true" >
+
+                <com.appbestsmile.voicelikeme.chat.CircleImageView
+                    android:id="@+id/avatarImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/chat_profile_background" />
+
+                <TextView
+                    android:id="@+id/avatarNickname"
+                    android:text="MI"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textAllCaps="true"/>
+
+            </RelativeLayout>
+
+            <!--RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layoutAvatarTop"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="2dp">
+
+                <ImageView
+                    android:id="@+id/imageLikes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_favorite_fill_24dp"/>
+
+                <TextView
+                    android:id="@+id/textLikes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10"
+                    android:layout_toRightOf="@+id/imageLikes"
+                    android:layout_marginLeft="2dp"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout-->
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.75"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textNickname"
+                    android:text="@string/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="5dp"/>
+
+                <TextView
+                    android:id="@+id/textLikes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textNickname"
+                    android:layout_marginLeft="10dp"
+                    android:text="10 likes"/>
+
+                <TextView
+                    android:id="@+id/textTimestamp"
+                    android:text="@string/app_name"
+                    android:textSize="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textMessage"
+                android:text="This is the text message"
+                android:textColor="@android:color/white"
+                android:textSize="14dp"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:background="@drawable/chat_messsage_round"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="0.1"
+            android:gravity="right"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/btnLike"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_favorite_border_24dp"/>
+
+            <ImageButton
+                android:id="@+id/btnPlay"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_play_circle_outline_black_24dp"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/btnZoom"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_zoom_out_map_black_24dp"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/btnDownload"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_file_download_black_24dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,6 +1,5 @@
 package com.appbestsmile.voicelikeme.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -23,6 +22,7 @@ import android.widget.ImageButton;
 
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.chat.CircleImageView;
+import com.appbestsmile.voicelikeme.chat.WaitProgressDialog;
 import com.appbestsmile.voicelikeme.global.AppPreference;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,9 +48,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ChatLoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class ChatProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private final String TAG = ChatLoginActivity.class.getSimpleName();
+    private final String TAG = ChatProfileActivity.class.getSimpleName();
 
     ImageButton profileImage;
     CircleImageView imageProfile;
@@ -65,7 +65,7 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_login);
+        setContentView(R.layout.activity_chat_profile);
 
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
@@ -79,7 +79,7 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
         setSupportActionBar(toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.md_black_1000));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.chat_main_dark));
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -166,13 +166,8 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-                ProgressDialog dialog = new ProgressDialog(this); // this = YourActivity
-                dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                dialog.setTitle(R.string.app_name);
-                dialog.setMessage("Updating. Please wait...");
-                dialog.setIndeterminate(true);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
+                WaitProgressDialog dialogUpdating = new WaitProgressDialog(this, "Updating. Please wait...");
+                dialogUpdating.show();
 
 
                 if(changedProfileImage){
@@ -234,7 +229,7 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                dialog.dismiss();
+                                                dialogUpdating.dismiss();
                                                 Log.d(TAG, "DocumentSnapshot successfully written!");
                                                 onBackPressed();
                                             }
@@ -242,7 +237,7 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                dialog.dismiss();
+                                                dialogUpdating.dismiss();
                                                 Log.w(TAG, "Error writing document", e);
                                             }
                                         });
@@ -270,14 +265,14 @@ public class ChatLoginActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d(TAG, "DocumentSnapshot successfully written!");
-                                    dialog.dismiss();
+                                    dialogUpdating.dismiss();
                                     onBackPressed();
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    dialog.dismiss();
+                                    dialogUpdating.dismiss();
                                     Log.w(TAG, "Error writing document", e);
                                 }
                             });

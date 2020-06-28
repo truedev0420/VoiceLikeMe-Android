@@ -4,8 +4,10 @@ public class TopicItem {
 
     private String title;
     private String createdDate;
+    private String topic_id;
 
-    public TopicItem(String title, String createdDate){
+    public TopicItem(String topic_id, String title, String createdDate){
+        this.topic_id = topic_id;
         this.title = title;
         this.createdDate = createdDate;
     }
@@ -24,5 +26,13 @@ public class TopicItem {
 
     public String getCreatedDate(){
         return this.createdDate;
+    }
+
+    public void setTopicId(String topic_id){
+        this.topic_id = topic_id;
+    }
+
+    public String getTopicId(){
+        return this.topic_id;
     }
 }

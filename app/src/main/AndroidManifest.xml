@@ -23,10 +23,10 @@
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/action_settings"
@@ -37,9 +37,24 @@
                 android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
         </activity>
         <activity android:name=".activities.PlayListActivity" />
-        <activity android:name=".activities.ChatTopicActivity" />
+
+        <activity android:name=".activities.ChatTopicActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
+        </activity>
+
         <activity
-            android:name=".activities.ChatLoginActivity"
+            android:name=".activities.ChatProfileActivity"
+            android:parentActivityName=".activities.ChatTopicActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appbestsmile.voicelikeme.activities.ChatTopicActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.ChatMessageActivity"
             android:parentActivityName=".activities.ChatTopicActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

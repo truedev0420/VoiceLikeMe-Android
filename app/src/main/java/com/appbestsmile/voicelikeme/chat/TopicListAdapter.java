@@ -1,6 +1,7 @@
 package com.appbestsmile.voicelikeme.chat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.appbestsmile.voicelikeme.R;
+import com.appbestsmile.voicelikeme.activities.ChatMessageActivity;
 
 import java.util.List;
 
@@ -47,6 +49,21 @@ public class TopicListAdapter extends ArrayAdapter<TopicItem> {
                 textCreatedDate.setText(topicItem.getCreatedDate());
             }
         }
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String topic_id = topicItem.getTopicId();
+
+                Intent intent = new Intent(mContext, ChatMessageActivity.class);
+
+                intent.putExtra("topic_id", topic_id);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                mContext.startActivity(intent);
+            }
+        });
         return v;
     }
 }

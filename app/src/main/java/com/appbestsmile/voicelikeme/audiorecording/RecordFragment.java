@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -25,7 +24,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.appbestsmile.voicelikeme.activities.ChatLoginActivity;
 import com.appbestsmile.voicelikeme.activities.ChatTopicActivity;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.appbestsmile.voicelikeme.AppConstants;

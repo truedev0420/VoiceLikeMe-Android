@@ -7,7 +7,16 @@
   <color name="av_color_bg">#8f367c</color>
   <color name="transparent">#00000000</color>
   <color name="toggle_back_unchecked">#2d2e31</color>
+
   <color name="chat_profile_background">#699F38</color>
+  <color name="chat_main">#F06292</color>
+  <color name="chat_main_dark">#B44A6E</color>
+  <color name="chat_enter_message_backgroud">#E1E1E1</color>
+  <color name="chat_send_background">#EA1E63</color>
+  <color name="chat_topic_background">#FBF0F4</color>
+  <color name="chat_topic_text">#D9648C</color>
+  <color name="chat_message_date">#EC1D63</color>
+
   <!--Accent Color Collection-->
 
   <!--MATERIAL COLORS-->

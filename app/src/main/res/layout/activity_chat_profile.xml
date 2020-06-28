@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ChatLoginActivity">
+    tools:context=".activities.ChatProfileActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:titleTextColor="@color/md_white_1000"
-        android:background="@color/md_black_1000"
+        android:background="@color/chat_main"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -72,7 +72,8 @@
     <Button
         android:id="@+id/btnUpdate"
         android:text="@string/chat_update"
-        android:background="@color/accent_color"
+        android:textColor="@android:color/white"
+        android:background="@color/chat_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintVertical_bias="0.5"
