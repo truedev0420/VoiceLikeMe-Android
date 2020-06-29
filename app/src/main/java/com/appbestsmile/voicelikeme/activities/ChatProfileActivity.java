@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -66,12 +67,6 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_profile);
-
-        Bundle extras = getIntent().getExtras();
-        if(extras !=null) {
-            auth_id = extras.getString("current_user_id");
-        }
-
 
         // =========================        Manage Action and status bar            ====================== //
 
@@ -120,6 +115,8 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
             imageProfile.setImageBitmap(bmp);
         }
 
+
+        auth_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -288,7 +285,10 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
             case 1:
                 if(resultCode == RESULT_OK){
                     Uri selectedImage = imageReturnedIntent.getData();
-                    imageProfile.setImageURI(selectedImage);
+                    String filePath = GetUriPath(selectedImage);
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                    imageProfile.setImageBitmap(bitmap);
                     selectedProfileImage = selectedImage;
                     changedProfileImage = true;
                 }

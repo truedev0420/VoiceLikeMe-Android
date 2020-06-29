@@ -17,6 +17,7 @@ import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.chat.TopicItem;
 import com.appbestsmile.voicelikeme.chat.TopicListAdapter;
 import com.appbestsmile.voicelikeme.chat.WaitProgressDialog;
+import com.appbestsmile.voicelikeme.global.AppPreference;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -105,11 +106,11 @@ public class ChatTopicActivity extends AppCompatActivity {
             }
         });
 
-        /*String nickname = AppPreference.getInstance().GetNickname();
+        String nickname = AppPreference.getInstance().GetNickname();
         if(nickname.isEmpty()){
-            Intent intent = new Intent(this, ChatLoginActivity.class);
+            Intent intent = new Intent(this, ChatProfileActivity.class);
             startActivity(intent);
-        }*/
+        }
     }
 
     @Override

@@ -161,6 +161,7 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
                                 String today = "";
                                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
+
                                 for (QueryDocumentSnapshot document : task.getResult()) {
 
                                     String message          = document.getString("message");
@@ -169,18 +170,20 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
                                     String user_id          = document.getString("user_id");
                                     List<String> liked_users = (List<String>) document.get("liked_users");
 
+                                    Log.d(TAG, "Timestamp : " + timestamp);
+
                                     for(int i = 0; i < listUsers.size(); i++){
 
                                         UserItem submitter = listUsers.get(i);
 
                                         if(submitter.id.compareTo(user_id) == 0){
 
-                                            String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
+                                            /*String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
                                             if(today.compareTo(dateString) != 0)
                                             {
                                                 today = dateString;
                                                 listMessages.add(new MessageItem(timestamp));
-                                            }
+                                            }*/
 
                                             String messageNickname = String.format("User_%s", user_id.substring(0, LENGTH_NICKNAME));
                                             listMessages.add(new MessageItem(document.getId(), submitter.id, submitter.nickname, submitter.profileImage, messageNickname, message, timestamp, mediaPath, liked_users));
@@ -348,7 +351,6 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
         layoutFullPhoto.setVisibility(View.VISIBLE);
         Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         imageFullPhoto.setImageBitmap(bitmap);
-
     }
 
     @Override

@@ -1,11 +1,16 @@
 package com.appbestsmile.voicelikeme.chat;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -22,6 +27,7 @@ import android.widget.Toast;
 
 import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.activities.ChatMessageActivity;
+import com.appbestsmile.voicelikeme.db.AppDataBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
@@ -40,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,249 +93,232 @@ public class MessageListAdapter extends ArrayAdapter<MessageItem> {
             TextView textMessage = (TextView) v.findViewById(R.id.textMessage);
             TextView textTimeStamp  = (TextView) v.findViewById(R.id.textTimestamp);
             TextView textLikes      = (TextView) v.findViewById(R.id.textLikes);
+            ImageView imagePreview  = (ImageView) v.findViewById(R.id.imagePreview);
 
             CircleImageView userAvatar = (CircleImageView) v.findViewById(R.id.avatarImage);
 
 
-            if(messageItem.isFirstSent){
+            String lastDate = "", currentDate = "";
 
-                RelativeLayout layoutDate = (RelativeLayout) v.findViewById(R.id.layoutDate);
-                LinearLayout layoutMessage = (LinearLayout) v.findViewById(R.id.layoutMessage);
+            if(position > 0){
+                lastDate = firstMessageFormatter.format(new Date(Long.parseLong(getItem(position - 1).timestamp)));
+                currentDate = firstMessageFormatter.format(new Date(Long.parseLong(messageItem.timestamp)));
+            }
+
+
+            RelativeLayout layoutDate = (RelativeLayout) v.findViewById(R.id.layoutDate);
+
+            if(position == 0 || position !=0 && currentDate.compareTo(lastDate) != 0){
+
                 TextView textDate = (TextView) v.findViewById(R.id.textDate);
 
                 layoutDate.setVisibility(View.VISIBLE);
-                layoutMessage.setVisibility(View.GONE);
-
                 String dateString = firstMessageFormatter.format(new Date(Long.parseLong(messageItem.timestamp)));
                 textDate.setText(dateString);
-
-            }else {
-
-                int likes = 0;
-                if(messageItem.likedUsers != null)
-                    likes = messageItem.likedUsers.size();
-
-                textLikes.setText(String.format("%d likes", likes));
+            }else
+                layoutDate.setVisibility(View.GONE);
 
 
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference storageRef = storage.getReference();
+            int likes = 0;
+            if(messageItem.likedUsers != null)
+                likes = messageItem.likedUsers.size();
 
-                // =====            Set user avatar             ===== //
+            textLikes.setText(String.format("%d likes", likes));
 
-                if(userAvatar != null && !messageItem.userAvatar.isEmpty()){
 
-                    String filePath = String.format("%s/%s", Environment.getExternalStorageDirectory().getPath(), messageItem.userAvatar.replace("/", "_"));
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
 
-                    File localFile = new File(filePath);
 
-                    try {
-                        if(!localFile.exists()){
-                            localFile.createNewFile();
+            // =====            Set user avatar             ===== //
 
-                            storageRef.child(messageItem.userAvatar).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    // Local temp file has been created
-                                    Bitmap bmp = BitmapFactory.decodeFile(localFile.getPath());
-                                    userAvatar.setImageBitmap(bmp);
-                                    textAvatarNickname.setVisibility(View.GONE);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
-                                }
-                            });
-                        }else{
-                            Bitmap bmp = BitmapFactory.decodeFile(localFile.getPath());
-                            userAvatar.setImageBitmap(bmp);
-                            textAvatarNickname.setVisibility(View.GONE);
-                        }
-                        notifyDataSetChanged();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            if(userAvatar != null && !messageItem.userAvatar.isEmpty()){
+
+                String filePath = String.format("%s/%s", mContext.getFilesDir(), messageItem.userAvatar.replace("/", "_"));
+
+                File localFile = new File(filePath);
+
+                try {
+                    if(!localFile.exists()){
+                        localFile.createNewFile();
+
+                        storageRef.child(messageItem.userAvatar).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                // Local temp file has been created
+                                Bitmap bmp = BitmapFactory.decodeFile(localFile.getPath());
+                                userAvatar.setImageBitmap(bmp);
+                                textAvatarNickname.setVisibility(View.GONE);
+                                notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle any errors
+                            }
+                        });
+                    }else{
+                        Bitmap bmp = BitmapFactory.decodeFile(localFile.getPath());
+                        userAvatar.setImageBitmap(bmp);
+                        textAvatarNickname.setVisibility(View.GONE);
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }else{
+                userAvatar.setImageBitmap(null);
+                textAvatarNickname.setVisibility(View.VISIBLE);
+            }
 
 
-                // =====            Set other views             ===== //
+            // =====            Set other views             ===== //
 
-                if (textAvatarNickname != null) {
-                    textAvatarNickname.setText(messageItem.userNickname.substring(0, 2));
-                }
+            if (textAvatarNickname != null) {
+                textAvatarNickname.setText(messageItem.userNickname.substring(0, 2));
+            }
 
-                if(textNickname != null){
-                    textNickname.setText(messageItem.userMessageNickname);
-                }
+            if(textNickname != null){
+                textNickname.setText(messageItem.userMessageNickname);
+            }
 
-                if (textMessage != null) {
-                    textMessage.setText(messageItem.message);
-                }
+            if (textMessage != null) {
+                textMessage.setText(messageItem.message);
+            }
 
-                if(textTimeStamp != null){
-                    String dateString = formatter.format(new Date(Long.parseLong(messageItem.timestamp)));
-                    textTimeStamp.setText(dateString);
-                }
+            if(textTimeStamp != null){
+                String dateString = formatter.format(new Date(Long.parseLong(messageItem.timestamp)));
+                textTimeStamp.setText(dateString);
+            }
 
-                // =====            Set user actions            ===== //
+            // =====            Set user actions            ===== //
 
-                ImageButton btnDownload = (ImageButton) v.findViewById(R.id.btnDownload);
-                ImageButton btnZoom = (ImageButton) v.findViewById(R.id.btnZoom);
-                ImageButton btnLike = (ImageButton) v.findViewById(R.id.btnLike);
-                ImageButton btnPLay = (ImageButton) v.findViewById(R.id.btnPlay);
+            ImageButton btnDownload = (ImageButton) v.findViewById(R.id.btnDownload);
+//                ImageButton btnZoom = (ImageButton) v.findViewById(R.id.btnZoom);
+            ImageButton btnLike = (ImageButton) v.findViewById(R.id.btnLike);
+            ImageButton btnPLay = (ImageButton) v.findViewById(R.id.btnPlay);
 
 
-                String ext = messageItem.message.substring(messageItem.message.indexOf(".") + 1);
-                String type = "message";
+            String ext = messageItem.message.substring(messageItem.message.indexOf(".") + 1);
+            String type = "message";
 
-                if (ext.equalsIgnoreCase("jpg")
-                        || ext.equalsIgnoreCase("png")
-                        || ext.equalsIgnoreCase("jpeg")) {
-                    type = "photo";
+            if (ext.equalsIgnoreCase("jpg")
+                    || ext.equalsIgnoreCase("png")
+                    || ext.equalsIgnoreCase("jpeg")) {
+                type = "photo";
 
-                } else if(ext.equalsIgnoreCase("wav")){
-                    type = "audio";
-                }
+            } else if(ext.equalsIgnoreCase("wav")){
+                type = "audio";
+            }
 
-                if(btnDownload != null && btnZoom != null && btnLike != null && btnPLay != null){
+            if(btnDownload != null && btnLike != null && btnPLay != null){
 
-                    switch (type){
-                        case "message" :
-                            btnDownload.setVisibility(View.GONE);
-                            btnPLay.setVisibility(View.GONE);
-                            btnZoom.setVisibility(View.GONE);
-                            btnLike.setVisibility(View.VISIBLE);
+                switch (type){
+                    case "message" :
+                        btnDownload.setVisibility(View.GONE);
+                        btnPLay.setVisibility(View.GONE);
+//                            btnZoom.setVisibility(View.GONE);
+                        btnLike.setVisibility(View.VISIBLE);
+                        imagePreview.setVisibility(View.GONE);
 
-                            textLikes.setVisibility(View.VISIBLE);
+                        textLikes.setVisibility(View.VISIBLE);
 
-                            if(messageItem.likedUsers.contains(currentUser.getUid())){
-                                btnLike.setImageResource(R.drawable.ic_favorite_fill_24dp);
+                        if(messageItem.likedUsers.contains(currentUser.getUid())){
+                            btnLike.setImageResource(R.drawable.ic_favorite_fill_24dp);
+                        }
+
+                        break;
+
+                    case "photo" :
+                        btnDownload.setVisibility(View.VISIBLE);
+                        btnPLay.setVisibility(View.GONE);
+//                            btnZoom.setVisibility(View.VISIBLE);
+                        btnLike.setVisibility(View.VISIBLE);
+
+                        textLikes.setVisibility(View.VISIBLE);
+
+                        if(messageItem.likedUsers.contains(currentUser.getUid())){
+                            btnLike.setImageResource(R.drawable.ic_favorite_fill_24dp);
+                        }
+
+                        download(messageItem, 0, imagePreview);
+
+                        imagePreview.setVisibility(View.VISIBLE);
+                        imagePreview.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                download(messageItem, 1, imagePreview);
                             }
+                        });
 
-                            break;
+                        break;
 
-                        case "photo" :
-                            btnDownload.setVisibility(View.VISIBLE);
-                            btnPLay.setVisibility(View.GONE);
-                            btnZoom.setVisibility(View.VISIBLE);
-                            btnLike.setVisibility(View.VISIBLE);
+                    case "audio" :
+                        btnDownload.setVisibility(View.VISIBLE);
+                        btnPLay.setVisibility(View.VISIBLE);
+//                            btnZoom.setVisibility(View.GONE);
+                        btnLike.setVisibility(View.GONE);
 
-                            textLikes.setVisibility(View.VISIBLE);
+                        textLikes.setVisibility(View.GONE);
 
-                            if(messageItem.likedUsers.contains(currentUser.getUid())){
-                                btnLike.setImageResource(R.drawable.ic_favorite_fill_24dp);
+                        imagePreview.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+                        imagePreview.setVisibility(View.VISIBLE);
+
+                        imagePreview.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                download(messageItem, 3, imagePreview);
                             }
+                        });
 
-                            break;
+                        break;
+                }
 
-                        case "audio" :
-                            btnDownload.setVisibility(View.VISIBLE);
-                            btnPLay.setVisibility(View.VISIBLE);
-                            btnZoom.setVisibility(View.GONE);
-                            btnLike.setVisibility(View.GONE);
+                btnDownload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                            textLikes.setVisibility(View.GONE);
-
-                            break;
+                        download(messageItem, 2, imagePreview);
                     }
-
-                    btnDownload.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            File localFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + messageItem.message);
-
-                            WaitProgressDialog dialogDownload = new WaitProgressDialog(mContext, "Downloading. Please wait...");
-                            dialogDownload.show();
-
-                            try {
-                                if(!localFile.exists()){
-                                    localFile.createNewFile();
+                });
 
 
+                // =====                Manage Like button          ===== //
 
-                                    storageRef.child("messages/" + messageItem.message).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            // Local temp file has been created
+                FirebaseApp.initializeApp(mContext);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                            Toast.makeText(mContext, "Downloaded successfully.",  Toast.LENGTH_LONG).show();
-                                            dialogDownload.dismiss();
+                btnLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                                            if(isZoomClicked){
-                                                ((ChatMessageActivity) mContext).showFullImage(localFile.getPath());
-                                            }
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            // Handle any errors
-                                            dialogDownload.dismiss();
-                                            Log.d(TAG, "Exception while downloading : " + exception.toString());
-                                        }
-                                    });
-                                }else{
-                                    Toast.makeText(mContext, "Downloaded successfully.",  Toast.LENGTH_LONG).show();
-                                    dialogDownload.dismiss();
-                                }
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                        if(messageItem.likedUsers.contains(currentUser.getUid())){
+                            Toast.makeText(mContext, "You have already liked this message.", Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    });
 
-
-                    // =====                Manage Like button          ===== //
-
-                    FirebaseApp.initializeApp(mContext);
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                    btnLike.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            if(messageItem.likedUsers.contains(currentUser.getUid())){
-                                Toast.makeText(mContext, "You have already liked this message.", Toast.LENGTH_SHORT);
-                                return;
-                            }
-
-                            if(messageItem.userId.compareTo(currentUser.getUid()) == 0){
-                                Toast.makeText(mContext, "You can't like your message.", Toast.LENGTH_SHORT);
-                                return;
-                            }
-
-                            Map<String, Object> messageUpdated = new HashMap<>();
-                            messageItem.likedUsers.add(currentUser.getUid());
-                            messageUpdated.put("liked_users", messageItem.likedUsers);
-
-                            db.collection("messages")
-                                    .document(messageItem.documentId)
-                                    .update(messageUpdated);
-
-                            ((ChatMessageActivity) mContext).restart();
+                        if(messageItem.userId.compareTo(currentUser.getUid()) == 0){
+                            Toast.makeText(mContext, "You can't like your message.", Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    });
 
+                        Map<String, Object> messageUpdated = new HashMap<>();
+                        messageItem.likedUsers.add(currentUser.getUid());
+                        messageUpdated.put("liked_users", messageItem.likedUsers);
 
-                    // =====                Manage Full screen view button          ===== //
+                        db.collection("messages")
+                                .document(messageItem.documentId)
+                                .update(messageUpdated);
 
-                    btnZoom.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            isZoomClicked = true;
-                            btnDownload.callOnClick();
-                        }
-                    });
-                }
+                        ((ChatMessageActivity) mContext).restart();
+                    }
+                });
             }
         }
         return v;
     }
 
-    public static void copy(File dst, File src) throws IOException {
+    public void copy(File dst, File src) throws IOException {
+
         InputStream in = new FileInputStream(src);
         try {
             OutputStream out = new FileOutputStream(dst);
@@ -339,11 +329,95 @@ public class MessageListAdapter extends ArrayAdapter<MessageItem> {
                 while ((len = in.read(buf)) > 0) {
                     out.write(buf, 0, len);
                 }
-            } finally {
+            } catch (Exception e){
+                Log.e(TAG, e.toString());
+            }finally {
                 out.close();
             }
-        } finally {
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }finally {
             in.close();
         }
+    }
+
+    private void download(MessageItem messageItem, int status, ImageView imagePreview){
+
+        File localFile = new File(mContext.getFilesDir() + File.separator + messageItem.message);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        try {
+            if(!localFile.exists()){
+                localFile.createNewFile();
+
+                storageRef.child("messages/" + messageItem.message).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        // Local temp file has been created
+
+                        if(status == 0)
+                            setPreviewImage(imagePreview, localFile);
+                        else if(status == 3){
+
+                            MediaPlayer mp = new MediaPlayer();
+                            try {
+                                mp.setDataSource(localFile.getPath());
+                                mp.prepare();
+                                mp.start();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        Log.d(TAG, "Exception while downloading : " + exception.toString());
+                    }
+                });
+            }else{
+
+                switch(status){
+                    case 0:
+                        setPreviewImage(imagePreview, localFile);
+                        break;
+                    case 1:
+                        ((ChatMessageActivity) mContext).showFullImage(localFile.getPath());
+                        break;
+                    case 2:
+                        File fileDestination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + File.separator + messageItem.message);
+
+                        if(!fileDestination.exists())
+                            fileDestination.createNewFile();
+
+                        copy(fileDestination, localFile);
+                        Toast.makeText(mContext, "Downloaded successfully.", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3 :
+
+                        MediaPlayer mp = new MediaPlayer();
+                        try {
+                            mp.setDataSource(localFile.getPath());
+                            mp.prepare();
+                            mp.start();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        notifyDataSetChanged();
+    }
+
+    private void setPreviewImage(ImageView imagePreview, File localFile){
+        Bitmap bmp = BitmapFactory.decodeFile(localFile.getPath());
+        imagePreview.setImageBitmap(bmp);
+        imagePreview.setVisibility(View.VISIBLE);
+        notifyDataSetChanged();
     }
 }

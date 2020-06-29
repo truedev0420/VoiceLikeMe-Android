@@ -26,7 +26,7 @@ public class MessageItem {
         this.message = message;
         this.timestamp = timestamp;
         this.mediaPath = mediaPath;
-        isFirstSent = false;
+        this.isFirstSent = false;
         this.likedUsers = likedUsers;
     }
 
