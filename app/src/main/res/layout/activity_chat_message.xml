@@ -20,7 +20,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         tools:ignore="MissingConstraints"
-        android:backgroundTint="@color/chat_main"/>
+        android:backgroundTint="@color/md_black_1000"/>
     
     <ListView
         android:id="@+id/listMessage"

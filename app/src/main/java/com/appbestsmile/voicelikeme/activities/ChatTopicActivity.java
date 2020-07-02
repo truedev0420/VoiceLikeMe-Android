@@ -54,7 +54,7 @@ public class ChatTopicActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.chat_main_dark));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.md_black_1000));
         }
 
         ActionBar actionBar = getSupportActionBar();
