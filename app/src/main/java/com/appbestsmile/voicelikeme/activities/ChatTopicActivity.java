@@ -106,21 +106,10 @@ public class ChatTopicActivity extends AppCompatActivity {
             }
         });
 
-        String nickname = AppPreference.getInstance().GetNickname();
-        if(nickname.isEmpty()){
-            Intent intent = new Intent(this, ChatProfileActivity.class);
-            startActivity(intent);
-        }
-    }
 
-    @Override
-    public void onStart() {
-
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser == null){
+        if(currentUser == null) {
 
             mAuth.signInAnonymously()
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -128,22 +117,23 @@ public class ChatTopicActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Log.d(TAG, " signInAnonymously success : " + user.getUid());
 
+                                String nickname = AppPreference.getInstance().GetNickname();
+
+                                if(nickname.isEmpty()){
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    Intent intent = new Intent(ChatTopicActivity.this, ChatProfileActivity.class);
+                                    startActivity(intent);
+                                }
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "signInAnonymously:failure", task.getException());
                             }
                         }
                     });
-
-        }else{
-            Log.d(TAG, "Current User : " + currentUser.getUid());
         }
-    }
 
-    // create an action bar buttonStorageException
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

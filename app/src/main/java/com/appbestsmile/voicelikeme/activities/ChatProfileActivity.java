@@ -236,6 +236,7 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
                                             public void onFailure(@NonNull Exception e) {
                                                 dialogUpdating.dismiss();
                                                 Log.w(TAG, "Error writing document", e);
+                                                onBackPressed();
                                             }
                                         });
                             }
