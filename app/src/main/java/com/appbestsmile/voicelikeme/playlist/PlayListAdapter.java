@@ -84,12 +84,11 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.Record
     }
 
     private void bindEvents() {
-      cardView.setOnClickListener(
+      playStateImage.setOnClickListener(
           view -> playListPresenter.onListItemClick(getAdapterPosition()));
 
-      cardView.setOnLongClickListener(v -> {
+      cardView.setOnClickListener(v -> {
         playListPresenter.onListItemLongClick(getAdapterPosition());
-        return false;
       });
     }
 
