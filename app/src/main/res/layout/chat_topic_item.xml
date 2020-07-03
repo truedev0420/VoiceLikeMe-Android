@@ -7,7 +7,7 @@
     android:paddingLeft="40dp"
     android:paddingRight="40dp"
     android:orientation="vertical"
-    android:background="@color/chat_topic_background">
+    android:background="@color/md_grey_200">
 
     <TextView
         android:id="@+id/textTopic"
@@ -16,14 +16,12 @@
         android:text="スケジュール"
         android:textStyle="bold"
         android:textSize="18dp"
-        android:paddingBottom="5dp"
-        android:textColor="@color/chat_topic_text"/>
+        android:paddingBottom="5dp"/>
 
     <TextView
         android:id="@+id/textCreatedDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2020/06/23 10:16PM"
-        android:textColor="@color/chat_topic_text"/>
+        android:text="2020/06/23 10:16PM"/>
 
 </LinearLayout>

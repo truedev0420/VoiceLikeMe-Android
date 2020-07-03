@@ -73,7 +73,7 @@
         android:id="@+id/btnUpdate"
         android:text="@string/chat_update"
         android:textColor="@android:color/white"
-        android:background="@color/chat_main"
+        android:background="@color/accent_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintVertical_bias="0.5"

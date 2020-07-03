@@ -13,13 +13,13 @@
         <TextView
             android:id="@+id/textDate"
             android:text="@string/app_name"
-            android:background="@drawable/chat_message_date_round"
             android:padding="5dp"
-            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
+
+    <!--android:background="@drawable/chat_message_date_round" -->
 
     <LinearLayout
         android:id="@+id/layoutMessage"
@@ -139,15 +139,13 @@
                     android:id="@+id/imagePreview"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:visibility="gone"
-                    android:src="@drawable/ic_zoom_out_map_black_24dp"/>
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/textMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="This is the text message"
-                    android:textColor="@android:color/white"
                     android:textSize="14dp"
                     android:gravity="center_vertical" />
 
