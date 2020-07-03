@@ -129,4 +129,10 @@ public class MainActivity extends BaseActivity
     }
     finish();
   }
+
+  @Override
+  public void onBackPressed() {
+    finish();
+    startActivity(new Intent(this, PlayListActivity.class));
+  }
 }

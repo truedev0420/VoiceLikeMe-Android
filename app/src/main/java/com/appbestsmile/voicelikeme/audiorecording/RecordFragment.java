@@ -4,6 +4,7 @@ import android.animation.FloatEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -102,8 +103,12 @@ public class RecordFragment extends BaseFragment implements AudioRecordMVPView {
         .subscribe(o -> audioRecordPresenter.onToggleRecodingStatus());
     /*RxView.clicks(mSettingsButton)
         .subscribe(o -> startActivity(new Intent(mContext, SettingsActivity.class)));*/
+
     RxView.clicks(mPlayListBtn)
-        .subscribe(o -> startActivity(new Intent(mContext, PlayListActivity.class)));
+        .subscribe(o -> {
+          ((Activity)mContext).finish();
+          startActivity(new Intent(mContext, PlayListActivity.class)); } );
+
     RxView.clicks(mPauseButton)
         .subscribe(o -> audioRecordPresenter.onTogglePauseStatus());
 

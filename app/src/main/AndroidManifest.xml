@@ -18,7 +18,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.PlayListActivity"
             android:launchMode="singleTop"
             android:screenOrientation="fullSensor">
             <intent-filter>
@@ -36,7 +36,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
         </activity>
-        <activity android:name=".activities.PlayListActivity" />
+
+        <activity android:name=".activities.MainActivity"
+            android:parentActivityName=".activities.PlayListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.appbestsmile.voicelikeme.activities.PlayListActivity" />
+        </activity>
 
         <activity android:name=".activities.ChatTopicActivity"
             android:parentActivityName=".activities.MainActivity">
