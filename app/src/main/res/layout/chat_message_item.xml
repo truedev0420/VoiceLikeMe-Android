@@ -147,6 +147,7 @@
                     android:layout_height="wrap_content"
                     android:text="This is the text message"
                     android:textSize="14dp"
+                    android:textColor="#333333"
                     android:gravity="center_vertical" />
 
             </LinearLayout>

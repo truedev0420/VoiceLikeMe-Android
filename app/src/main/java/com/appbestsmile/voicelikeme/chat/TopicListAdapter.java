@@ -59,6 +59,7 @@ public class TopicListAdapter extends ArrayAdapter<TopicItem> {
                 Intent intent = new Intent(mContext, ChatMessageActivity.class);
 
                 intent.putExtra("topic_id", topic_id);
+                intent.putExtra("topic_title", topicItem.getTitle());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 mContext.startActivity(intent);

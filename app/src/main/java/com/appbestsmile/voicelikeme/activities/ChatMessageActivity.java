@@ -61,6 +61,7 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
     private final int FILE_OPEN_REQUEST_CODE = 1000;
 
     public String topic_id;
+
     private Uri selectedFile;
     private Context mContext;
 
@@ -85,9 +86,12 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
 
         mContext = this;
 
+        String topic_title = "";
+
         Bundle extras = getIntent().getExtras();
         if(extras !=null) {
             topic_id = extras.getString("topic_id");
+            topic_title = extras.getString("topic_title");
         }
 
         editMessage = findViewById(R.id.editMessage);
@@ -108,7 +112,11 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(AppPreference.getInstance().GetNickname());
+
+            // #13 : Topic title should be shown
+//            actionBar.setTitle(AppPreference.getInstance().GetNickname());
+
+            actionBar.setTitle(topic_title);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
