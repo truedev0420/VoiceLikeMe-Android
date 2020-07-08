@@ -22,6 +22,8 @@ public class MessageItem {
         this.userId = userId;
         this.userNickname = userNickname;
         this.userAvatar = userAvatar;
+        // #
+        this.userMessageNickname = userMessageNickname;
         this.userMessageNickname = userMessageNickname;
         this.message = message;
         this.timestamp = timestamp;
