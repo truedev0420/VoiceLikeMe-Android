@@ -1,7 +1,9 @@
 package com.appbestsmile.voicelikeme.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -60,6 +62,16 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
     if(voice_name != null){
       playListFragment.setNotiData(voice_name);
     }
+
+    // Show RecordingActivity when record floatingactionbutton was clicked.
+    FloatingActionButton btnRecord = (FloatingActionButton) findViewById(R.id.btnRecord);
+    btnRecord.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        finish();
+        startActivity(new Intent(PlayListActivity.this, MainActivity.class));
+      }
+    });
   }
 
   @Override public AndroidInjector<Fragment> supportFragmentInjector() {
@@ -78,12 +90,10 @@ public class PlayListActivity extends BaseActivity implements HasSupportFragment
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
-    if (id == R.id.btnRecord) {
-      finish();
-      startActivity(new Intent(this, MainActivity.class));
+    if (id == R.id.btnChat) {
+      Intent intent = new Intent(this, ChatTopicActivity.class);
+      startActivity(intent);
     }
     return super.onOptionsItemSelected(item);
   }
-
-
 }

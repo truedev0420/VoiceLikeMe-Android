@@ -87,6 +87,9 @@ dependencies {
 
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.0'
 
+    // =====            For FloatingActionButton ===== //
+    // implementation 'com.google.android.material:material:1.1.0'
+
 
     // =====            Implementation for firestore chat           ===== //
     implementation 'com.google.firebase:firebase-firestore:19.0.2'
