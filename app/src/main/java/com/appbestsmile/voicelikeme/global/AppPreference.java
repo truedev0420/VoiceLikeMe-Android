@@ -19,7 +19,10 @@ public class AppPreference {
     private AppPreference(){ }
 
     public static AppPreference getInstance(){
-        if (mInstance == null) mInstance = new AppPreference();
+
+        if (mInstance == null)
+            mInstance = new AppPreference();
+
         return mInstance;
     }
 

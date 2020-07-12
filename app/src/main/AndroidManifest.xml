@@ -44,12 +44,7 @@
                 android:value="com.appbestsmile.voicelikeme.activities.PlayListActivity" />
         </activity>
 
-        <activity android:name=".activities.ChatTopicActivity"
-            android:parentActivityName=".activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.appbestsmile.voicelikeme.activities.MainActivity" />
-        </activity>
+        <activity android:name=".activities.ChatTopicActivity"/>
 
         <activity
             android:name=".activities.ChatProfileActivity"

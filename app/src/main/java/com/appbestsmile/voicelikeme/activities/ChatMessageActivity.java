@@ -121,7 +121,16 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
             actionBar.setDisplayShowHomeEnabled(true);
         }
 
+
         toolbar.setNavigationIcon(R.drawable.ic_arrow_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+
 
         listView = (ListView) findViewById(R.id.listMessage);
         listMessages = new ArrayList<MessageItem>();

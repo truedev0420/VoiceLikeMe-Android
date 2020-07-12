@@ -40,6 +40,7 @@
     <string name="chat_nickname">Nickname</string>
     <string name="chat_update">Update</string>
     <string name="chat_enter_message">Please enter the message</string>
+    <string name="chat_enter_nickname">Please enter nickname</string>
     <string name="chat_dialog_like">Like</string>
     <string name="chat_dialog_full_view">View</string>
     <string name="chat_dialog_download">Download</string>

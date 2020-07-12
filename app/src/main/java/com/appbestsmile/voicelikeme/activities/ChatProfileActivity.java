@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -85,7 +86,12 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_white_24dp);
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         profileImage = (ImageButton) findViewById(R.id.btn_profileImage);
         profileImage.setOnClickListener(this);
@@ -95,6 +101,9 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
 
         editNickname = findViewById(R.id.editNickname);
         imageProfile = (CircleImageView) findViewById(R.id.imageProfile);
+
+
+        AppPreference.getInstance().Initialize(this);
 
         InitViews();
     }
@@ -153,6 +162,18 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnUpdate :
 
                 String nickname = editNickname.getText().toString();
+
+                if(nickname.isEmpty()){
+                    new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.app_name))
+                        .setMessage(getString(R.string.chat_enter_nickname))
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.dialog_action_ok), null)
+                        .create()
+                        .show();
+
+                    break;
+                }
 
                 // =====            Save user profile to local              ===== //
 

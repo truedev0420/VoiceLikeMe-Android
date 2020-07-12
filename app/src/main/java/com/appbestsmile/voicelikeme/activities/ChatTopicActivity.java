@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 import com.appbestsmile.voicelikeme.R;
@@ -65,7 +66,12 @@ public class ChatTopicActivity extends AppCompatActivity {
         }
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_white_24dp);
-
+        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
         listView = (ListView) findViewById(R.id.listTopics);
@@ -153,5 +159,10 @@ public class ChatTopicActivity extends AppCompatActivity {
             startActivity(new Intent(this, ChatProfileActivity.class).putExtra("current_user_id", mAuth.getCurrentUser().getUid()));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }
