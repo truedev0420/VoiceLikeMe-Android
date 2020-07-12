@@ -18,6 +18,7 @@ import com.appbestsmile.voicelikeme.R;
 import com.appbestsmile.voicelikeme.chat.TopicItem;
 import com.appbestsmile.voicelikeme.chat.TopicListAdapter;
 import com.appbestsmile.voicelikeme.chat.WaitProgressDialog;
+import com.appbestsmile.voicelikeme.chat.WatchTopicThread;
 import com.appbestsmile.voicelikeme.global.AppPreference;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -77,20 +78,59 @@ public class ChatTopicActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listTopics);
         listTopics = new ArrayList<TopicItem>();
 
+        WaitProgressDialog dialogLoading = new WaitProgressDialog(this, "Loading. Please wait...");
+        dialogLoading.show();
+
+        loadTopicsFirebase(dialogLoading);
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        Log.d(TAG, "logged in : " + mAuth.getCurrentUser().getUid());
+
+        if(currentUser == null) {
+
+            mAuth.signInAnonymously()
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+
+                                Log.d(TAG, "logged in : " + mAuth.getCurrentUser().getUid());
+
+                                String nickname = AppPreference.getInstance().GetNickname();
+
+                                if(nickname.isEmpty()){
+                                    Intent intent = new Intent(ChatTopicActivity.this, ChatProfileActivity.class);
+                                    startActivity(intent);
+                                }
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            }
+                        }
+                    });
+        }
+
+        new WatchTopicThread(this).start();
+    }
+
+
+    // *****                    Load Topics from Firebase                                           ***** //
+
+    public void loadTopicsFirebase(WaitProgressDialog dialogLoading){
 
         // Access a Cloud Firestore instance from your Activity
+
         FirebaseApp.initializeApp(this);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference topicsCollectionRef = db.collection("topics");
-
-
-        WaitProgressDialog dialogLoading = new WaitProgressDialog(this, "Loading. Please wait...");
-        dialogLoading.show();
 
         topicsCollectionRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+
+                    listTopics.clear();
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
 
@@ -108,37 +148,10 @@ public class ChatTopicActivity extends AppCompatActivity {
                     }
                 }
 
-                dialogLoading.dismiss();
+                if(dialogLoading != null)
+                    dialogLoading.dismiss();
             }
         });
-
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if(currentUser == null) {
-
-            mAuth.signInAnonymously()
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-
-                                String nickname = AppPreference.getInstance().GetNickname();
-
-                                if(nickname.isEmpty()){
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    Intent intent = new Intent(ChatTopicActivity.this, ChatProfileActivity.class);
-                                    startActivity(intent);
-                                }
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w(TAG, "signInAnonymously:failure", task.getException());
-                            }
-                        }
-                    });
-        }
-
     }
 
     @Override
