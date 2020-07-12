@@ -35,6 +35,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,6 +62,7 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
     private final int FILE_OPEN_REQUEST_CODE = 1000;
 
     public String topic_id;
+    public UserItem currentUser;
 
     private Uri selectedFile;
     private Context mContext;
@@ -131,9 +133,9 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
         });
 
 
-
         listView = (ListView) findViewById(R.id.listMessage);
         listMessages = new ArrayList<MessageItem>();
+        messageListAdapter = new MessageListAdapter(mContext, R.layout.chat_message_item, listMessages);
 
 
         // Access a Cloud Firestore instance from your Activity
@@ -160,6 +162,11 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
                         String profile_image  = document.getString("profile_image");
 
                         listUsers.add(new UserItem(user_id, nickname, profile_image));
+
+                        if(user_id.contains(FirebaseAuth.getInstance().getUid())){
+
+                            currentUser = new UserItem(user_id, nickname, profile_image);
+                        }
                     }
 
                     CollectionReference messagesCollectionRef = db.collection("messages");
@@ -171,54 +178,23 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
                                 }
                             })
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
 
-                                String today = "";
-                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+                                        String today = "";
+                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
 
-
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-
-                                    String message          = document.getString("message");
-                                    String timestamp        = document.getString("timestamp");
-                                    String mediaPath        = document.getString("media_path");
-                                    String user_id          = document.getString("user_id");
-                                    List<String> liked_users = (List<String>) document.get("liked_users");
-
-                                    Log.d(TAG, "Timestamp : " + timestamp);
-
-                                    for(int i = 0; i < listUsers.size(); i++){
-
-                                        UserItem submitter = listUsers.get(i);
-
-                                        if(submitter.id.compareTo(user_id) == 0){
-
-                                            /*String dateString = formatter.format(new Date(Long.parseLong(timestamp)));
-                                            if(today.compareTo(dateString) != 0)
-                                            {
-                                                today = dateString;
-                                                listMessages.add(new MessageItem(timestamp));
-                                            }*/
-
-                                            String messageNickname = String.format("User_%s", user_id.substring(0, LENGTH_NICKNAME));
-                                            listMessages.add(new MessageItem(document.getId(), submitter.id, submitter.nickname, submitter.profileImage, messageNickname, message, timestamp, mediaPath, liked_users));
-                                            break;
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            updateMessageItem(document, false);
                                         }
+
+                                        listView.setAdapter(messageListAdapter);
                                     }
-                                }
 
-                                if(listMessages.size() != 0)
-                                {
-                                    messageListAdapter = new MessageListAdapter(mContext, R.layout.chat_message_item, listMessages);
-                                    listView.setAdapter(messageListAdapter);
+                                    loadingDialog.dismiss();
                                 }
-                            }
-
-                            loadingDialog.dismiss();
-                        }
-                    });
+                            });
                 }
             }
         });
@@ -324,7 +300,7 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    protected void createMessageOnFirebase(String strMessage){
+    private void createMessageOnFirebase(String strMessage){
 
         String user_id = FirebaseAuth.getInstance().getUid();
 
@@ -332,7 +308,10 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
         message.put("topic_id", topic_id);
         message.put("user_id", user_id);
         message.put("message", strMessage);
-        message.put("timestamp", System.currentTimeMillis() + "");
+
+        String timeStamp = System.currentTimeMillis() + "";
+
+        message.put("timestamp", timeStamp);
         message.put("liked_users", new ArrayList<String>());
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -346,7 +325,8 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
                         editMessage.setText("");
                         dialogUpload.dismiss();
 
-                        restart();
+                        // Show new sent message
+                        updateMessageItem(documentReference.getId(), false);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -355,11 +335,6 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
-    }
-
-    public void restart(){
-        finish();
-        startActivity(getIntent().putExtra("topic_id", topic_id));
     }
 
     public void showFullImage(String imagePath){
@@ -379,5 +354,83 @@ public class ChatMessageActivity extends AppCompatActivity implements View.OnCli
         }
         else
             super.onBackPressed();
+    }
+
+
+    // *****        Update Message Item when user clicked like or send new message                  ***** //
+
+    public void updateMessageItem(String documentId, boolean isUpdate){
+
+        FirebaseApp.initializeApp(this);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = db.collection("messages").document(documentId);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        updateMessageItem(document, isUpdate);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    // *****        Add / Update MessageItem from Firebase Message Document to messageList          ***** //
+
+    public void updateMessageItem(DocumentSnapshot document, boolean isUpdate){
+
+        String message          = document.getString("message");
+        String timestamp        = document.getString("timestamp");
+        String mediaPath        = document.getString("media_path");
+        String user_id          = document.getString("user_id");
+        List<String> liked_users = (List<String>) document.get("liked_users");
+
+        Log.d(TAG, "Timestamp : " + timestamp);
+
+        for(int i = 0; i < listUsers.size(); i++){
+
+            UserItem submitter = listUsers.get(i);
+
+            if(submitter.id.compareTo(user_id) == 0){
+
+                String messageNickname = String.format("User_%s", user_id.substring(0, LENGTH_NICKNAME));
+                MessageItem messageItem =  new MessageItem(document.getId(), submitter.id, submitter.nickname, submitter.profileImage, messageNickname, message, timestamp, mediaPath, liked_users);
+
+                if(isUpdate){
+
+                    for(int iMessage = 0; iMessage < listMessages.size(); iMessage++){
+                        if(listMessages.get(iMessage).documentId.contains(document.getId())){
+                            listMessages.set(iMessage, messageItem);
+                        }
+                    }
+
+
+                    // *****            messageListAdapter should be locked before notify           ***** //
+
+                    synchronized(messageListAdapter){
+                        messageListAdapter.notifyDataSetChanged();
+                    }
+
+                }else{
+
+                    listMessages.add(messageItem);
+                    synchronized(messageListAdapter){
+                        messageListAdapter.notifyDataSetChanged();
+                        listView.setSelection(messageListAdapter.getCount() - 1);
+                    }
+                }
+
+                break;
+            }
+        }
     }
 }

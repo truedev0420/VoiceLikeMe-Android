@@ -178,7 +178,9 @@ public class MessageListAdapter extends ArrayAdapter<MessageItem> {
             }
 
             if(textNickname != null){
-                textNickname.setText(messageItem.userMessageNickname);
+
+//                textNickname.setText(messageItem.userMessageNickname);
+                textNickname.setText(messageItem.userNickname);
             }
 
             if (textMessage != null) {
@@ -309,7 +311,7 @@ public class MessageListAdapter extends ArrayAdapter<MessageItem> {
                                 .document(messageItem.documentId)
                                 .update(messageUpdated);
 
-                        ((ChatMessageActivity) mContext).restart();
+                        ((ChatMessageActivity) mContext).updateMessageItem(messageItem.documentId, true);
                     }
                 });
             }
