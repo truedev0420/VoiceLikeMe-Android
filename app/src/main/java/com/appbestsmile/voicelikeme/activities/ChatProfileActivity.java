@@ -1,6 +1,10 @@
 package com.appbestsmile.voicelikeme.activities;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +13,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -39,15 +45,14 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class ChatProfileActivity extends AppCompatActivity implements View.OnClickListener {
@@ -55,6 +60,8 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
     private final String TAG = ChatProfileActivity.class.getSimpleName();
 
     ImageButton profileImage;
+    Bitmap selectedBitmap;
+
     CircleImageView imageProfile;
     Button btnUpdate;
     EditText editNickname;
@@ -63,6 +70,7 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
     String old_nickname;
     String mOldProfileImage;
     boolean changedProfileImage = false;
+    final int CAMERA_PIC_REQUEST = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +94,7 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
@@ -106,24 +114,28 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
         AppPreference.getInstance().Initialize(this);
 
         InitViews();
+
+        checkCameraPermission();
     }
 
-    private void InitViews(){
+    private void InitViews() {
 
         String nickName = AppPreference.getInstance().GetNickname();
-        if(!nickName.isEmpty()){
+        if (!nickName.isEmpty()) {
             old_nickname = nickName;
             editNickname.setText(nickName);
         }
 
 
         String profileImagePath = AppPreference.getInstance().GetProfileImage();
-        if(!profileImagePath.isEmpty())
-        {
-            Bitmap bmp = BitmapFactory.decodeFile(profileImagePath);
-            imageProfile.setImageBitmap(bmp);
+        if (!profileImagePath.isEmpty()) {
+            try {
+                Bitmap bmp = BitmapFactory.decodeFile(profileImagePath);
+                imageProfile.setImageBitmap(bmp);
+            } catch (Exception e) {
+                Log.e(TAG, "kfdjsla : " + e.toString());
+            }
         }
-
 
         auth_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -151,26 +163,31 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
 
-        switch(view.getId()){
+        switch (view.getId()) {
 
-            case R.id.btn_profileImage :
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
+            case R.id.btn_profileImage:
+
+//                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+//                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+//                startActivityForResult(pickPhoto , 1);//one can be replaced with any action code
+
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+
                 break;
 
-            case R.id.btnUpdate :
+            case R.id.btnUpdate:
 
                 String nickname = editNickname.getText().toString();
 
-                if(nickname.isEmpty()){
+                if (nickname.isEmpty()) {
                     new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.app_name))
-                        .setMessage(getString(R.string.chat_enter_nickname))
-                        .setCancelable(true)
-                        .setPositiveButton(getString(R.string.dialog_action_ok), null)
-                        .create()
-                        .show();
+                            .setTitle(getString(R.string.app_name))
+                            .setMessage(getString(R.string.chat_enter_nickname))
+                            .setCancelable(true)
+                            .setPositiveButton(getString(R.string.dialog_action_ok), null)
+                            .create()
+                            .show();
 
                     break;
                 }
@@ -188,18 +205,13 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
                 dialogUpdating.show();
 
 
-                if(changedProfileImage){
+                if (changedProfileImage) {
 
-                    String destFilePath = Savefile(selectedProfileImage);
+                    String destFilePath = SaveBitmap(selectedBitmap, nickname);
                     AppPreference.getInstance().SetProfileImage(destFilePath);
 
 
-                    Bitmap bitmap = BitmapFactory.decodeFile(destFilePath);
-                    imageProfile.setImageBitmap(bitmap);
-
-
                     // =====            Save user profile to firebase           ===== //
-
 
                     FirebaseStorage storage = FirebaseStorage.getInstance();
                     StorageReference storageRef = storage.getReference();
@@ -216,7 +228,7 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
 
                     // Get the data from an ImageView as bytes
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] data = baos.toByteArray();
 
                     try {
@@ -262,17 +274,17 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
                                         });
                             }
                         })
-                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(UploadTask.TaskSnapshot snapshot) {
-                                Log.d(TAG, "Uploaded bytes : " + snapshot.getBytesTransferred());
-                            }
-                        });
-                    }catch(Exception e){
+                                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onProgress(UploadTask.TaskSnapshot snapshot) {
+                                        Log.d(TAG, "Uploaded bytes : " + snapshot.getBytesTransferred());
+                                    }
+                                });
+                    } catch (Exception e) {
                         Log.d(TAG, "Exception while uploading : " + e.toString());
                     }
 
-                }else{
+                } else {
 
                     Map<String, Object> user = new HashMap<>();
                     user.put("nickname", nickname);
@@ -303,22 +315,29 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
 
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
-            case 1:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    String filePath = GetUriPath(selectedImage);
+        switch (requestCode) {
+            case CAMERA_PIC_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        /*Uri selectedImage = imageReturnedIntent.getData();
+                        String filePath = GetUriPath(selectedImage);
+                        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                        selectedProfileImage = selectedImage;*/
 
-                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-                    imageProfile.setImageBitmap(bitmap);
-                    selectedProfileImage = selectedImage;
-                    changedProfileImage = true;
+                        Bitmap bitmap = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                        imageProfile.setImageBitmap(bitmap);
+                        selectedBitmap = bitmap;
+
+                        changedProfileImage = true;
+                    } catch (Exception e) {
+                        Log.e("kfdjsaklfdj ", e.toString());
+                    }
                 }
                 break;
         }
     }
 
-    String Savefile(Uri sourceuri)
+    /*String Savefile(Uri sourceuri)
     {
         String sourceFilename = sourceuri.getPath();
         String filePath = GetUriPath(sourceuri);
@@ -353,15 +372,71 @@ public class ChatProfileActivity extends AppCompatActivity implements View.OnCli
         }
 
         return destinationFilename;
+    }*/
+
+    String SaveBitmap(Bitmap bitmap, String nickname) {
+
+        String destinationFilename = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separatorChar + nickname + ".jpg";
+
+        try {
+            File avatar = new File(destinationFilename);
+
+            if (avatar.exists()) {
+                avatar.delete();
+            }
+
+            avatar.createNewFile();
+            FileOutputStream out = new FileOutputStream(avatar);
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+            out.flush();
+            out.close();
+
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } catch (IOException e) {
+            Log.e(TAG, "kfjsdlak : " + e.toString());
+        }
+
+        return destinationFilename;
     }
 
-    String GetUriPath(Uri uri){
+    String GetUriPath(Uri uri) {
 
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         startManagingCursor(cursor);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
+    }
+
+    private final int MY_PERMISSIONS_REQUEST_USE_CAMERA = 0x00AF;
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            Log.d(TAG, "Permission not available requesting permission");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_USE_CAMERA);
+        } else {
+            Log.d(TAG, "Permission has already granted");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_USE_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "permission was granted! Do your stuff");
+                } else {
+                    Log.d(TAG, "permission denied! Disable the function related with permission.");
+                }
+                return;
+            }
+        }
+
     }
 }

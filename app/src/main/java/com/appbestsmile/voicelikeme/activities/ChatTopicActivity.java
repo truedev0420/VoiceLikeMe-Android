@@ -41,6 +41,8 @@ public class ChatTopicActivity extends AppCompatActivity {
     TopicListAdapter topicListAdapter;
     ArrayList<TopicItem> listTopics;
 
+    WatchTopicThread watchTopicThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +72,7 @@ public class ChatTopicActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                finish();
+                onBackPressed();
             }
         });
 
@@ -84,7 +86,9 @@ public class ChatTopicActivity extends AppCompatActivity {
         loadTopicsFirebase(dialogLoading);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Log.d(TAG, "logged in : " + mAuth.getCurrentUser().getUid());
+
+        if(currentUser != null)
+            Log.d(TAG, "logged in : " + currentUser.getUid());
 
         if(currentUser == null) {
 
@@ -97,6 +101,7 @@ public class ChatTopicActivity extends AppCompatActivity {
 
                                 Log.d(TAG, "logged in : " + mAuth.getCurrentUser().getUid());
 
+                                AppPreference.getInstance().Initialize(ChatTopicActivity.this);
                                 String nickname = AppPreference.getInstance().GetNickname();
 
                                 if(nickname.isEmpty()){
@@ -111,7 +116,8 @@ public class ChatTopicActivity extends AppCompatActivity {
                     });
         }
 
-        new WatchTopicThread(this).start();
+        watchTopicThread = new WatchTopicThread(this);
+        watchTopicThread.start();
     }
 
 
@@ -176,6 +182,8 @@ public class ChatTopicActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        watchTopicThread.interrupt();
+        watchTopicThread = null;
         super.onBackPressed();
     }
 }

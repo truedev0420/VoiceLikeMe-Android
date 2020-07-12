@@ -53,6 +53,7 @@ public class WatchTopicThread extends Thread {
 
             while(true) {
 
+                Log.d(TAG, "running thread");
                 context.loadTopicsFirebase(null);
                 Thread.sleep(SLEEP_INTERVAL);
             }
