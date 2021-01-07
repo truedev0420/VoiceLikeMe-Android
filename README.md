@@ -13,4 +13,4 @@ VoiceLikeMe-Android is an android application to denoise while recording your vo
 
 You can get help from https://appbestsmile.com/productsaffirmation/.
 
-<img src = "Screenshoots/Screenshot_01.png" width ="200" /> <img src = "Screenshoots/Screenshot_02.png" width ="200" /> <img src = "Screenshoots/Screenshot_03.png" width ="200" /> <img src = "Screenshoots/Screenshot_04.png" width ="200" /> <img src = "Screenshoots/Screenshot_05.png" width ="200" /> <img src = "Screenshoots/Screenshot_06.png" width ="200" />
+<img src = "Screenshoots/Screenshot_01.png" width ="300" /> <img src = "Screenshoots/Screenshot_02.png" width ="300" /> <img src = "Screenshoots/Screenshot_03.png" width ="300" /> <img src = "Screenshoots/Screenshot_04.png" width ="300" /> <img src = "Screenshoots/Screenshot_05.png" width ="300" /> <img src = "Screenshoots/Screenshot_06.png" width ="300" />
